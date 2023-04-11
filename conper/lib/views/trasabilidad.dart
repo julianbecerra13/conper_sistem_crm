@@ -4,8 +4,8 @@ import 'package:conper/views/components/menu.dart';
 
 // _logOut(context); // llamar a la función _logOut
 
-class Dashboard extends StatelessWidget {
-  const Dashboard({super.key});
+class Trasabilidad extends StatelessWidget {
+  const Trasabilidad({super.key});
 
   // función asincrónica para eliminar los datos de inicio de sesión
   Future<void> _logOut(BuildContext context) async {
@@ -26,12 +26,12 @@ class Dashboard extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                const Text('Dashboard'),
+                const Text('Bienvenido al Dashboard estas en trasabilidad'),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    _logOut(context);
-                  },
+                  onPressed: () => _logOut(context),
                   child: const Text('Cerrar sesión'),
+
                 ),
               ],
             ),

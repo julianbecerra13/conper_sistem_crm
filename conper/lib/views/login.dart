@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('username', _userController.text);
         await prefs.setString('password', _passwordController.text);
 
-        VRouter.of(context).to('/dashboard');
+        VRouter.of(context).to('/trasabilidad');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

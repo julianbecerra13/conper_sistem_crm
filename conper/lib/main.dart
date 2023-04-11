@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
-import '/views/dashboard.dart';
+import '/views/trasabilidad.dart';
 import '/views/login.dart';
+
 void main() {
-  runApp( const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
             path: '/',
             widget: const LoginPage(),
             stackedRoutes: [
-              VWidget(path: '/dashboard', widget: const Dashboard()),
+              VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
+             
             ],
           ),
         ],
