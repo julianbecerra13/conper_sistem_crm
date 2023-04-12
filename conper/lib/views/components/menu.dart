@@ -7,8 +7,9 @@ class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 250,
+      width: 270,
       child: Drawer(
+        elevation: 1,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -26,24 +27,58 @@ class Menu extends StatelessWidget {
             //     // Navigator.pop(context);
             //   },
             // ),
-            ListTile(
-              tileColor: Colors.blue,
-              title: const Text('Trasabilidad'),
-              onTap: () {
-                VRouter.of(context).to('/trasabilidad');
-              },
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(158, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                title: const Text('Trasabilidad',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                leading:
+                    const Icon(Icons.arrow_circle_right, color: Colors.blue),
+                onTap: () {
+                  VRouter.of(context).to('/trasabilidad');
+                },
+              ),
             ),
-            ListTile(
-              title: const Text('Pedidos'),
-              onTap: () {
-                VRouter.of(context).to('/inventario');
-              },
-            ),
-            ListTile(
-              title: const Text('Domicilios'),
-              onTap: () {
-                VRouter.of(context).to('/reportes');
-              },
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(158, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: const Text('Pedidos'),
+                      leading: const Icon(Icons.food_bank),
+                      onTap: () {
+                        VRouter.of(context).to('/inventario');
+                      },
+                    ),
+                    // divider
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      indent: 20,
+                      endIndent: 20,
+                    ),
+                    ListTile(
+                      title: const Text('Domicilios'),
+                      leading: const Icon(Icons.delivery_dining),
+                      onTap: () {
+                        VRouter.of(context).to('/reportes');
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

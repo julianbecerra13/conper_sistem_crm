@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           // Aquí definimos nuestras rutas
           VWidget(
             path: '/',
-            widget: const LoginPage(),
+            widget: const Trasabilidad(),
             stackedRoutes: [
               VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
              
