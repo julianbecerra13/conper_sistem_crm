@@ -59,7 +59,7 @@ class Menu extends StatelessWidget {
                       title: const Text('Pedidos'),
                       leading: const Icon(Icons.food_bank),
                       onTap: () {
-                        VRouter.of(context).to('/inventario');
+                        VRouter.of(context).to('/pedidos');
                       },
                     ),
                     // divider
@@ -73,7 +73,7 @@ class Menu extends StatelessWidget {
                       title: const Text('Domicilios'),
                       leading: const Icon(Icons.delivery_dining),
                       onTap: () {
-                        VRouter.of(context).to('/reportes');
+                        VRouter.of(context).to('/domicilios');
                       },
                     ),
                   ],

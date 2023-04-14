@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
+import 'components/modal.dart';
 import 'components/tabla.dart';
 
 // _logOut(context); // llamar a la función _logOut
 
-class Trasabilidad extends StatelessWidget {
-  const Trasabilidad({super.key});
+class Pedidos extends StatelessWidget {
+  const Pedidos({super.key});
 
   // función asincrónica para eliminar los datos de inicio de sesión
   Future<void> _logOut(BuildContext context) async {
@@ -102,7 +103,7 @@ class Trasabilidad extends StatelessWidget {
                                     MainAxisAlignment.start,
                                 children: const [
                                   Text(
-                                    "GENERAL",
+                                    "PEDIDOS",
                                     style: TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
@@ -113,7 +114,7 @@ class Trasabilidad extends StatelessWidget {
                                 padding: const EdgeInsets.all(20),
                                 child: SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height - 250,
+                                      MediaQuery.of(context).size.height - 300,
                                   child: const SingleChildScrollView(
                                     child: Tabla(
                                       data: [
@@ -379,6 +380,25 @@ class Trasabilidad extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+   void _showModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AGREGAR DOMICILIARIO'),
+          content: const MyModalContent(),
+          actions: [
+            TextButton(
+              child: const Text('Agregar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

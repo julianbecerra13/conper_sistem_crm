@@ -1,3 +1,5 @@
+import 'package:conper/views/domicilios.dart';
+import 'package:conper/views/pedidos.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 import '/views/trasabilidad.dart';
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
             widget: const Trasabilidad(),
             stackedRoutes: [
               VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
+              VWidget(path: '/pedidos', widget: const Pedidos()),
+              VWidget(path: '/domicilios', widget: const Domicilios()),
              
             ],
           ),

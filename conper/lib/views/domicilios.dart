@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
 import 'components/tabla.dart';
-
+import 'components/modal.dart';
 // _logOut(context); // llamar a la función _logOut
 
-class Trasabilidad extends StatelessWidget {
-  const Trasabilidad({super.key});
+class Domicilios extends StatelessWidget {
+  const Domicilios({super.key});
 
   // función asincrónica para eliminar los datos de inicio de sesión
   Future<void> _logOut(BuildContext context) async {
@@ -48,20 +48,19 @@ class Trasabilidad extends StatelessWidget {
                               child: Container(
                                 height: 40,
                                 child: const TextField(
-                                controller: null,
-                                decoration: InputDecoration(
-
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 5),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10.0),
+                                  controller: null,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 5),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0),
+                                      ),
                                     ),
+                                    hintText: 'Buscar...',
+                                    prefixIcon: Icon(Icons.search),
                                   ),
-                                  hintText: 'Buscar...',
-                                  prefixIcon: Icon(Icons.search),
                                 ),
-                              ),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -85,7 +84,7 @@ class Trasabilidad extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -99,13 +98,31 @@ class Trasabilidad extends StatelessWidget {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    "GENERAL",
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "DOMICILIOS",
                                     style: TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
+                                  ),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ))),
+                                    onPressed: () {
+                                      _showModal(context);
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 18.0, vertical: 12.0),
+                                      child: Text('Agg Domiciliario',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -113,7 +130,7 @@ class Trasabilidad extends StatelessWidget {
                                 padding: const EdgeInsets.all(20),
                                 child: SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height - 250,
+                                      MediaQuery.of(context).size.height - 300,
                                   child: const SingleChildScrollView(
                                     child: Tabla(
                                       data: [
@@ -379,6 +396,26 @@ class Trasabilidad extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AGREGAR DOMICILIARIO'),
+          content: const MyModalContent(),
+          actions: [
+            TextButton(
+              child: const Text('Agregar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
