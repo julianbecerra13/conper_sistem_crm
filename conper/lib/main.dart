@@ -1,7 +1,9 @@
+// ignore: unused_import
 import 'package:conper/views/domicilios.dart';
 import 'package:conper/views/pedidos.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
+// ignore: unused_import
 import '/views/trasabilidad.dart';
 // ignore: unused_import
 import '/views/login.dart';
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
           // Aquí definimos nuestras rutas
           VWidget(
             path: '/',
-            widget: const Domicilios(),
+            widget: const Pedidos(),
             stackedRoutes: [
               VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
               VWidget(path: '/pedidos', widget: const Pedidos()),

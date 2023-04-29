@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:conper/views/components/menu.dart';
-import 'components/modal.dart';
-import 'components/tabla.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../models/ordenes.dart';
+import 'package:flutter/material.dart'                             ;
+import 'package:shared_preferences/shared_preferences.dart'        ;
+import 'package:conper/views/components/menu.dart'                 ;
+import 'components/modal.dart'                                     ;
+import 'components/tabla.dart'                                     ;
+import 'dart:convert'                                              ;
+import 'package:http/http.dart'                             as http;
+import '../models/ordenes.dart'                                    ; 
 
 // _logOut(context); // llamar a la función _logOut
 
 class Pedidos extends StatefulWidget {
-  const Pedidos({super.key});
+  const Pedidos({Key? key}) : super(key: key);
 
   @override
   State<Pedidos> createState() => _PedidosState();
@@ -18,12 +18,12 @@ class Pedidos extends StatefulWidget {
 
 class _PedidosState extends State<Pedidos> {
   late List<Map<String, dynamic>> ordersTraza = [];
-  // función asincrónica para eliminar los datos de inicio de sesión
+  bool termino = false;
+
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
     await prefs.remove('password');
-    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -33,23 +33,26 @@ class _PedidosState extends State<Pedidos> {
     getOrders();
   }
 
-  getOrders() async {
+  void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
+        termino = true;
       });
     });
   }
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final response = await http.get(Uri.parse(
-        'http://0.0.0.0:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
-
       orders = data.map((order) => Ordenes.fromJson(order)).toList();
+    } else {
+      throw Exception('Failed to load orders');
     }
+
     List<Map<String, dynamic>> orderMap = [];
 
     for (var order in orders) {
@@ -135,7 +138,7 @@ class _PedidosState extends State<Pedidos> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
-                        child: Flexible(
+                        child: Container(
                           child: Column(
                             children: [
                               Row(
@@ -154,40 +157,34 @@ class _PedidosState extends State<Pedidos> {
                                 child: SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height - 300,
-                                  child: SingleChildScrollView(
-                                    child: Tabla(
-                                      data: ordersTraza,
-                                      headers: const [
-                                        {
-                                          "Titulo": 'ID orden',
-                                          "key": "idGeneral"
-                                        },
-                                        {
-                                          "Titulo": 'Nombre',
-                                          "key": "NombreCliente"
-                                        },
-                                        {
-                                          "Titulo": 'Direccion',
-                                          "key": "DireccionOrden"
-                                        },
-                                        {
-                                          "Titulo": 'Total de la orden',
-                                          "key": "TotalOrden"
-                                        },
-                                        {"Titulo": 'Fecha', "key": "FechaCrea"},
-                                        {
-                                          "Titulo": 'Estado',
-                                          "key": "NombreTraza"
-                                        },
-                                      ],
-                                      childButton: TextButton(
-                                        onPressed: () {
-                                          _showModal(context);
-                                        },
-                                        child:
-                                            const Text('Designar Domiciliario'),
-                                      ),
-                                    ),
+                                  child: Tabla(
+                                    data: ordersTraza,
+                                    headers: const [
+                                      {
+                                        "Titulo": 'ID orden',
+                                        "key": "idGeneral"
+                                      },
+                                      {
+                                        "Titulo": 'Nombre',
+                                        "key": "NombreCliente"
+                                      },
+                                      {
+                                        "Titulo": 'Direccion',
+                                        "key": "DireccionOrden"
+                                      },
+                                      {
+                                        "Titulo": 'Total de la orden',
+                                        "key": "TotalOrden"
+                                      },
+                                      {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                      {
+                                        "Titulo": 'Estado',
+                                        "key": "NombreTraza"
+                                      },
+                          
+                                    ], onButtonPressed: (int ) { 
+                                    
+                                     }, child: const Icon( Icons.motorcycle, color: Colors.white, size: 30,),
                                   ),
                                 ),
                               ),
@@ -203,26 +200,6 @@ class _PedidosState extends State<Pedidos> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AGREGAR DOMICILIARIO'),
-          content: const MyModalContent(),
-          actions: [
-            TextButton(
-              child: const Text('Agregar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

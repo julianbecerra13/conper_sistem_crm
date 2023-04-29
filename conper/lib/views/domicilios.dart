@@ -17,12 +17,12 @@ class Domicilios extends StatefulWidget {
 
 class _DomiciliosState extends State<Domicilios> {
   late List<Map<String, dynamic>> ordersTraza = [];
-  // función asincrónica para eliminar los datos de inicio de sesión
+  bool termino = false;
+
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
     await prefs.remove('password');
-    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -32,10 +32,11 @@ class _DomiciliosState extends State<Domicilios> {
     getOrders();
   }
 
-  getOrders() async {
+void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
+        termino = true;
       });
     });
   }
@@ -43,11 +44,10 @@ class _DomiciliosState extends State<Domicilios> {
   // ignore: unused_element
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final response = await http.get(Uri.parse(
-        'http://0.0.0.0:8080/domicilios?idCliente=1&idTraza=5&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
-
       orders = data.map((order) => Ordenes.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
@@ -61,25 +61,8 @@ class _DomiciliosState extends State<Domicilios> {
     return orderMap;
   }
 
-  void _showModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AGREGAR DOMICILIARIO'),
-          content: const MyModalContent(),
-          actions: [
-            TextButton(
-              child: const Text('Agregar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +141,7 @@ class _DomiciliosState extends State<Domicilios> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
-                        child: Flexible(
+                        child: Container(
                           child: Column(
                             children: [
                               Row(
@@ -196,40 +179,35 @@ class _DomiciliosState extends State<Domicilios> {
                                 child: SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height - 300,
-                                  child: SingleChildScrollView(
-                                    child: Tabla(
-                                      data: ordersTraza,
-                                      headers: const [
-                                        {
-                                          "Titulo": 'ID orden',
-                                          "key": "idGeneral"
-                                        },
-                                        {
-                                          "Titulo": 'Nombre',
-                                          "key": "NombreCliente"
-                                        },
-                                        {
-                                          "Titulo": 'Direccion',
-                                          "key": "DireccionOrden"
-                                        },
-                                        {
-                                          "Titulo": 'Total de la orden',
-                                          "key": "TotalOrden"
-                                        },
-                                        {"Titulo": 'Fecha', "key": "FechaCrea"},
-                                        {
-                                          "Titulo": 'Estado',
-                                          "key": "NombreTraza"
-                                        },
-                                      ],
-                                      childButton: TextButton(
-                                        onPressed: () {
-                                          _showModal(context);
-                                        },
-                                        child:
-                                            const Text('Detalles de la orden'),
-                                      ),
-                                    ),
+                                  child: Tabla(
+                                    data: ordersTraza,
+                                    headers: const [
+                                      {
+                                        "Titulo": 'ID orden',
+                                        "key": "idGeneral"
+                                      },
+                                      {
+                                        "Titulo": 'Nombre',
+                                        "key": "NombreCliente"
+                                      },
+                                      {
+                                        "Titulo": 'Direccion',
+                                        "key": "DireccionOrden"
+                                      },
+                                      {
+                                         "Titulo": 'Total de la orden',
+                                        "key": "TotalOrden"
+                                      },
+                                      {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                      {
+                                        "Titulo": 'Estado',
+                                        "key": "NombreTraza"
+                                      },
+                                    ], onButtonPressed: (int ) {  
+
+                                    },
+                                    child: const Icon(Icons.check , color: Colors.green,),
+                                    
                                   ),
                                 ),
                               ),
@@ -245,6 +223,25 @@ class _DomiciliosState extends State<Domicilios> {
           ),
         ],
       ),
+    );
+  }
+   void _showModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AGREGAR DOMICILIARIO'),
+          content: const MyModalContent(),
+          actions: [
+            TextButton(
+              child: const Text('Agregar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

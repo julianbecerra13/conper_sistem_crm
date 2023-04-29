@@ -3,13 +3,19 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class Tabla extends StatelessWidget {
   final List<Map<String, dynamic>> data;
-  final List<Map<String,dynamic>> headers;
+  final List<Map<String, dynamic>> headers;
+  final Function(int) onButtonPressed;
+  final Widget child;
   // Funcion que ejecuta el boton. Tiene que poder acceder al id del row
-  
-  // el contenido que muestra el boton, puede ser icono o texto
-  final Widget childButton;
 
-  const Tabla({Key? key, required this.data, required this.headers, required this.childButton,})
+  // el contenido que muestra el boton, puede ser icono o texto
+
+  const Tabla(
+      {Key? key,
+      required this.data,
+      required this.headers,
+      required this.onButtonPressed,
+      required this.child})
       : super(key: key);
 
   @override
@@ -41,6 +47,10 @@ class Tabla extends StatelessWidget {
         ),
         ...data.map(
           (rowData) => TableRow(
+            decoration: BoxDecoration(
+                color: rowData["NombreTraza"] == "Preparando"
+                    ? const Color.fromARGB(255, 199, 255, 201)
+                    : const Color.fromARGB(255, 255, 249, 194)),
             children: [
               // for each map
               ...headers.map(
@@ -52,8 +62,16 @@ class Tabla extends StatelessWidget {
                 ),
               ),
               TableCell(
-                 child: childButton,
-              )
+                  child: Center(
+                heightFactor: 1.5,
+                widthFactor: 1.5,
+                child: ElevatedButton(
+                  onPressed: () {
+                    onButtonPressed(rowData["idGeneral"]);
+                  },
+                  child: child,
+                ),
+              ))
             ],
           ),
         ),

@@ -1,12 +1,12 @@
-import 'dart:convert';
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:conper/views/components/menu.dart';
-import '../models/ordenes.dart';
-import 'components/modal.dart';
-import 'components/tabla.dart';
-import 'package:http/http.dart' as http;
+import 'dart:convert'                                              ;
+import 'dart:async'                                                ;
+import 'package:flutter/material.dart'                             ;
+import 'package:shared_preferences/shared_preferences.dart'        ;
+import 'package:conper/views/components/menu.dart'                 ;
+import '../models/ordenes.dart'                                    ;
+import 'components/modal.dart'                                     ;
+import 'components/tabla.dart'                                     ;
+import 'package:http/http.dart'                             as http;
 
 // _logOut(context); // llamar a la función _logOut
 
@@ -19,12 +19,13 @@ class Trasabilidad extends StatefulWidget {
 
 class _TrasabilidadState extends State<Trasabilidad> {
   late List<Map<String, dynamic>> ordersTraza = [];
-  // función asincrónica para eliminar los datos de inicio de sesión
+  bool termino = false;
+
+
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
     await prefs.remove('password');
-    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -34,21 +35,21 @@ class _TrasabilidadState extends State<Trasabilidad> {
     getOrders();
   }
 
-  getOrders() async {
+void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
+        termino = true;
       });
     });
   }
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final response = await http.get(Uri.parse(
-        'http://0.0.0.0:8080/domicilios?idCliente=1&idTraza=6&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
-
       orders = data.map((order) => Ordenes.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
@@ -59,7 +60,6 @@ class _TrasabilidadState extends State<Trasabilidad> {
     for (var order in orders) {
       orderMap.add(order.toJson());
     }
-
     return orderMap;
   }
 
@@ -140,7 +140,8 @@ class _TrasabilidadState extends State<Trasabilidad> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
-                        child: Flexible(
+                        // ignore: avoid_unnecessary_containers
+                        child: Container(
                           child: Column(
                             children: [
                               Row(
@@ -184,14 +185,9 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                           "Titulo": 'Estado',
                                           "key": "NombreTraza"
                                         },
-                                      ],
-                                      childButton: TextButton(
-                                        onPressed: () {
-                                          _showModal(context);
-                                        },
-                                        child:
-                                            const Text('Detalles de la orden'),
-                                      ),
+                                      ], onButtonPressed: (int ) { 
+                                      },
+                                      child: const Text("Detalles"),  
                                     ),
                                   ),
                                 ),
