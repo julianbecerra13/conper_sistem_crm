@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart'                             ;
-import 'package:shared_preferences/shared_preferences.dart'        ;
-import 'package:conper/views/components/menu.dart'                 ;
-import 'components/modal.dart'                                     ;
-import 'components/tabla.dart'                                     ;
-import 'dart:convert'                                              ;
-import 'package:http/http.dart'                             as http;
-import '../models/ordenes.dart'                                    ; 
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:conper/views/components/menu.dart';
+import 'components/modal.dart';
+import 'components/tabla.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../models/ordenes.dart';
 
 // _logOut(context); // llamar a la función _logOut
 
@@ -44,7 +44,7 @@ class _PedidosState extends State<Pedidos> {
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
+        'http://localhost:8080/pedidos?idCliente=1&idTraza=2&idPunto=60'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -60,6 +60,7 @@ class _PedidosState extends State<Pedidos> {
     }
     return orderMap;
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -181,10 +182,15 @@ class _PedidosState extends State<Pedidos> {
                                         "Titulo": 'Estado',
                                         "key": "NombreTraza"
                                       },
-                          
-                                    ], onButtonPressed: (int ) { 
-                                    
-                                     }, child: const Icon( Icons.motorcycle, color: Colors.white, size: 30,),
+                                    ],
+                                    onButtonPressed: (ID) {
+                                      
+                                    },
+                                    child: const Icon(
+                                      Icons.motorcycle,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -202,4 +208,5 @@ class _PedidosState extends State<Pedidos> {
       ),
     );
   }
+
 }

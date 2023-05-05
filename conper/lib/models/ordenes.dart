@@ -1,9 +1,12 @@
+
+import 'dart:typed_data';
+
 class Ordenes{
 
   late int idOrdenGeneral;
   late String nombreCliente;
   late String direccionOrden;
-  late int totalOrden;
+  late double totalOrden;
   late String fechaCrea;
   late String nombreTraza;
 
@@ -21,7 +24,7 @@ class Ordenes{
       idOrdenGeneral: json['IDOrdenGeneral'] as int,
       nombreCliente: json['NombreCliente'] as String,
       direccionOrden: json['DireccionOrden'] as String,
-      totalOrden: json['TotalOrden'] as int,
+      totalOrden: json['TotalOrden'] as double,
       fechaCrea: json['FechaCrea'] as String,
       nombreTraza: json['NombreTraza'] as String,
     );

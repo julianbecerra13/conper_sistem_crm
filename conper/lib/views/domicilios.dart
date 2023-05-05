@@ -1,3 +1,4 @@
+import 'package:conper/models/domiciliario.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
@@ -6,7 +7,6 @@ import 'components/modal.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/ordenes.dart';
-// _logOut(context); // llamar a la función _logOut
 
 class Domicilios extends StatefulWidget {
   const Domicilios({super.key});
@@ -16,8 +16,8 @@ class Domicilios extends StatefulWidget {
 }
 
 class _DomiciliosState extends State<Domicilios> {
-  late List<Map<String, dynamic>> ordersTraza = [];
-  bool termino = false;
+  List<Map<String, dynamic>> ordersTraza = [];
+  List<Map<String, dynamic>> domiciliariosList = [];
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -30,13 +30,21 @@ class _DomiciliosState extends State<Domicilios> {
   void initState() {
     super.initState();
     getOrders();
+    getDomiciliarios();
   }
 
-void getOrders() async {
+  void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
-        termino = true;
+      });
+    });
+  }
+
+  void getDomiciliarios() async {
+    await _getDomiciliarios().then((value) {
+      setState(() {
+        domiciliariosList = value;
       });
     });
   }
@@ -44,7 +52,7 @@ void getOrders() async {
   // ignore: unused_element
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=1&idTraza=5&idPunto=60'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -61,8 +69,26 @@ void getOrders() async {
     return orderMap;
   }
 
+  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+    final response = await http.get(Uri.parse(
+        'http://localhost:8080/domiciliarios?idCliente=1&idTraza=60'));
+    List<dynamic> domici = [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)["domiciliarios"];
+      domici = data
+          .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
+          .toList();
+    } else {
+      throw Exception('Failed to load domiciliarios');
+    }
 
- 
+    List<Map<String, dynamic>> domiciliariosMap = [];
+
+    for (var domiciliario in domici) {
+      domiciliariosMap.add(domiciliario.toJson());
+    }
+    return domiciliariosMap;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,31 +173,31 @@ void getOrders() async {
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
+                                children: const [
+                                  Text(
                                     "DOMICILIOS",
                                     style: TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ))),
-                                    onPressed: () {
-                                      _showModal(context);
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 18.0, vertical: 12.0),
-                                      child: Text('Agg Domiciliario',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ),
-                                  ),
+                                  // ElevatedButton(
+                                  //   style: ButtonStyle(
+                                  //       shape: MaterialStateProperty.all<
+                                  //               RoundedRectangleBorder>(
+                                  //           RoundedRectangleBorder(
+                                  //     borderRadius: BorderRadius.circular(10.0),
+                                  //   ))),
+                                  //   onPressed: () {
+                                  //     _showModal(context);
+                                  //   },
+                                  //   child: const Padding(
+                                  //     padding: EdgeInsets.symmetric(
+                                  //         horizontal: 18.0, vertical: 12.0),
+                                  //     child: Text('Agg Domiciliario',
+                                  //         style:
+                                  //             TextStyle(color: Colors.white)),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                               Padding(
@@ -195,7 +221,7 @@ void getOrders() async {
                                         "key": "DireccionOrden"
                                       },
                                       {
-                                         "Titulo": 'Total de la orden',
+                                        "Titulo": 'Total de la orden',
                                         "key": "TotalOrden"
                                       },
                                       {"Titulo": 'Fecha', "key": "FechaCrea"},
@@ -203,11 +229,19 @@ void getOrders() async {
                                         "Titulo": 'Estado',
                                         "key": "NombreTraza"
                                       },
-                                    ], onButtonPressed: (int ) {  
-
+                                      {
+                                        "Titulo": 'Domiciliario',
+                                        "key": "domiciliario"
+                                      },
+                                      
+                                    ],
+                                    onButtonPressed: (ID) {
+                                      _showModal(context);
                                     },
-                                    child: const Icon(Icons.check , color: Colors.green,),
-                                    
+                                    child: const Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -225,21 +259,13 @@ void getOrders() async {
       ),
     );
   }
-   void _showModal(BuildContext context) {
+
+  void _showModal(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('AGREGAR DOMICILIARIO'),
-          content: const MyModalContent(),
-          actions: [
-            TextButton(
-              child: const Text('Agregar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+          content: MyModalContent(domiciliariosList: domiciliariosList),
         );
       },
     );

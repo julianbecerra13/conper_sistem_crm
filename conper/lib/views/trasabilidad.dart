@@ -1,12 +1,12 @@
-import 'dart:convert'                                              ;
-import 'dart:async'                                                ;
-import 'package:flutter/material.dart'                             ;
-import 'package:shared_preferences/shared_preferences.dart'        ;
-import 'package:conper/views/components/menu.dart'                 ;
-import '../models/ordenes.dart'                                    ;
-import 'components/modal.dart'                                     ;
-import 'components/tabla.dart'                                     ;
-import 'package:http/http.dart'                             as http;
+import 'dart:convert';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:conper/views/components/menu.dart';
+import '../models/ordenes.dart';
+import 'components/modal.dart';
+import 'components/tabla.dart';
+import 'package:http/http.dart' as http;
 
 // _logOut(context); // llamar a la función _logOut
 
@@ -21,7 +21,6 @@ class _TrasabilidadState extends State<Trasabilidad> {
   late List<Map<String, dynamic>> ordersTraza = [];
   bool termino = false;
 
-
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
@@ -35,7 +34,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
     getOrders();
   }
 
-void getOrders() async {
+  void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
@@ -46,7 +45,7 @@ void getOrders() async {
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=1&idTraza=2&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=1&idTraza=6&idPunto=60'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -185,9 +184,13 @@ void getOrders() async {
                                           "Titulo": 'Estado',
                                           "key": "NombreTraza"
                                         },
-                                      ], onButtonPressed: (int ) { 
-                                      },
-                                      child: const Text("Detalles"),  
+                                        {
+                                          "Titulo": 'Domiciliario',
+                                          "key": "domiciliario"
+                                        }
+                                      ],
+                                      onButtonPressed: (int) {},
+                                      child: const Text("Detalles"),
                                     ),
                                   ),
                                 ),
@@ -206,24 +209,4 @@ void getOrders() async {
       ),
     );
   }
-}
-
-void _showModal(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Detalles de la orden'),
-        content: const MyModalContent(),
-        actions: [
-          TextButton(
-            child: const Text('Agregar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

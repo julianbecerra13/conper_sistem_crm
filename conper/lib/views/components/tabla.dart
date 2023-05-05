@@ -48,9 +48,12 @@ class Tabla extends StatelessWidget {
         ...data.map(
           (rowData) => TableRow(
             decoration: BoxDecoration(
-                color: rowData["NombreTraza"] == "Preparando"
-                    ? const Color.fromARGB(255, 199, 255, 201)
-                    : const Color.fromARGB(255, 255, 249, 194)),
+              color: rowData["NombreTraza"] == "Preparando"
+                  ? const Color.fromARGB(255, 185, 255, 188)
+                  : rowData["NombreTraza"] == "En Movil"
+                      ? const Color.fromARGB(255, 229, 184, 255)
+                      : const Color.fromARGB(255, 185, 223, 255),
+            ),
             children: [
               // for each map
               ...headers.map(
