@@ -19,7 +19,6 @@ class Trasabilidad extends StatefulWidget {
 
 class _TrasabilidadState extends State<Trasabilidad> {
   late List<Map<String, dynamic>> ordersTraza = [];
-  bool termino = false;
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,7 +37,6 @@ class _TrasabilidadState extends State<Trasabilidad> {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
-        termino = true;
       });
     });
   }

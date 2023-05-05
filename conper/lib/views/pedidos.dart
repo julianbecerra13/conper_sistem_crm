@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
+import '../models/domiciliario.dart';
 import 'components/modal.dart';
 import 'components/tabla.dart';
 import 'dart:convert';
@@ -18,7 +19,7 @@ class Pedidos extends StatefulWidget {
 
 class _PedidosState extends State<Pedidos> {
   late List<Map<String, dynamic>> ordersTraza = [];
-  bool termino = false;
+  List<Map<String, dynamic>> domiciliariosList = [];
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -31,13 +32,21 @@ class _PedidosState extends State<Pedidos> {
   void initState() {
     super.initState();
     getOrders();
+    getDomiciliarios();
   }
 
   void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
-        termino = true;
+      });
+    });
+  }
+
+  void getDomiciliarios() async {
+    await _getDomiciliarios().then((value) {
+      setState(() {
+        domiciliariosList = value;
       });
     });
   }
@@ -60,7 +69,27 @@ class _PedidosState extends State<Pedidos> {
     }
     return orderMap;
   }
-  
+
+  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+    final response = await http.get(Uri.parse(
+        'http://localhost:8080/domiciliarios?idCliente=1&idTraza=60'));
+    List<dynamic> domici = [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)["domiciliarios"];
+      domici = data
+          .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
+          .toList();
+    } else {
+      throw Exception('Failed to load domiciliarios');
+    }
+
+    List<Map<String, dynamic>> domiciliariosMap = [];
+
+    for (var domiciliario in domici) {
+      domiciliariosMap.add(domiciliario.toJson());
+    }
+    return domiciliariosMap;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +213,7 @@ class _PedidosState extends State<Pedidos> {
                                       },
                                     ],
                                     onButtonPressed: (ID) {
-                                      
+                                      _showModal(context);
                                     },
                                     child: const Icon(
                                       Icons.motorcycle,
@@ -209,4 +238,14 @@ class _PedidosState extends State<Pedidos> {
     );
   }
 
+  void _showModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: MyModalContent(domiciliariosList: domiciliariosList),
+        );
+      },
+    );
+  }
 }

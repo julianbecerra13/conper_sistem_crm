@@ -233,7 +233,6 @@ class _DomiciliosState extends State<Domicilios> {
                                         "Titulo": 'Domiciliario',
                                         "key": "domiciliario"
                                       },
-                                      
                                     ],
                                     onButtonPressed: (ID) {
                                       _showModal(context);
