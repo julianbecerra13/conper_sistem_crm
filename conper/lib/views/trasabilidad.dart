@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
 import '../models/ordenes.dart';
-import 'components/modal.dart';
 import 'components/tabla.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,6 +23,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
     await prefs.remove('password');
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -187,6 +187,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                           "key": "domiciliario"
                                         }
                                       ],
+                                      // ignore: avoid_types_as_parameter_names
                                       onButtonPressed: (int) {},
                                       child: const Text("Detalles"),
                                     ),

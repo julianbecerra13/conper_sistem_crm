@@ -25,6 +25,7 @@ class _PedidosState extends State<Pedidos> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
     await prefs.remove('password');
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop();
   }
 
@@ -168,6 +169,7 @@ class _PedidosState extends State<Pedidos> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
+                        // ignore: avoid_unnecessary_containers
                         child: Container(
                           child: Column(
                             children: [
@@ -211,7 +213,8 @@ class _PedidosState extends State<Pedidos> {
                                         "Titulo": 'Estado',
                                         "key": "NombreTraza"
                                       },
-                                    ],
+                                    ],                             
+                                    // ignore: non_constant_identifier_names
                                     onButtonPressed: (ID) {
                                       _showModal(context);
                                     },

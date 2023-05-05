@@ -1,10 +1,5 @@
-import 'dart:convert';
-
 import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import '../../models/domiciliario.dart';
 
 class MyModalContent extends StatelessWidget {
   final List<Map<String, dynamic>> domiciliariosList;
@@ -44,8 +39,9 @@ class MyModalContent extends StatelessWidget {
                           {"Titulo": "Nombre", "key": "nombre"},
                           {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
                         ],
+                        // ignore: non_constant_identifier_names
                         onButtonPressed: (ID) {
-
+                          
                         },
                         child: const Text("Asignarle el Pedido"),
                       ),
