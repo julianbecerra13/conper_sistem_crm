@@ -40,8 +40,9 @@ class MyModalContent extends StatelessWidget {
                           {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
                         ],
                         // ignore: non_constant_identifier_names
-                        ButtonPressed: (ID) {
-                           
+                        onButtonPressed: (ID, Nombre) {
+                          print(ID);
+                          print(Nombre);
                         },
                         child: const Text("Asignarle el Pedido"),
                       ),

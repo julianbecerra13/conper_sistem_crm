@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class Tabla extends StatelessWidget {
   final List<Map<String, dynamic>> data;
   final List<Map<String, dynamic>> headers;
-  final Function(Map<String, dynamic>)ButtonPressed;
+  final Function(int,String,)onButtonPressed;
   final Widget child;
  
 
@@ -14,7 +14,7 @@ class Tabla extends StatelessWidget {
       {Key? key,
       required this.data,
       required this.headers,
-      required this.ButtonPressed,
+      required this.onButtonPressed,
       required this.child})
       : super(key: key);
 
@@ -69,11 +69,9 @@ class Tabla extends StatelessWidget {
                 heightFactor: 1.5,
                 widthFactor: 1.5,
                 child: ElevatedButton(
-                  onPressed: 
-                    ButtonPressed(
-                      rowData,
-                    ),
-                  
+                  onPressed: () {
+                    onButtonPressed(rowData["idGeneral"], rowData["NombreTraza"]);
+                  },
                   child: child,
                 ),
               ))

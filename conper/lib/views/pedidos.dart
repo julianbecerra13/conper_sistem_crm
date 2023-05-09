@@ -215,7 +215,9 @@ class _PedidosState extends State<Pedidos> {
                                       },
                                     ],                             
                                     // ignore: non_constant_identifier_names
-                                    ButtonPressed: (ID) {
+                                    onButtonPressed: (ID, NombreTraza) {
+                                      print(ID);
+                                      print(NombreTraza);
                                       _showModal(context);
                                     },
                                     child: const Icon(

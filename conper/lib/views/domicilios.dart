@@ -237,7 +237,7 @@ class _DomiciliosState extends State<Domicilios> {
                                       },
                                     ],
                                     // ignore: non_constant_identifier_names
-                                    ButtonPressed: (ID) {
+                                    onButtonPressed: (ID, index) {
                                       _showModal(context,);
                                     },
                                     child: const Icon(

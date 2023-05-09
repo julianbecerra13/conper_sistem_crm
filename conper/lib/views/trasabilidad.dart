@@ -188,7 +188,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                         }
                                       ],
                                       // ignore: avoid_types_as_parameter_names
-                                      ButtonPressed: (int) {},
+                                      onButtonPressed: (ID, Nombre) {},
                                       child: const Text("Detalles"),
                                     ),
                                   ),
