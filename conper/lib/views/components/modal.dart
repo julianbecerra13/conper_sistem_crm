@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class MyModalContent extends StatelessWidget {
   final List<Map<String, dynamic>> domiciliariosList;
-  const MyModalContent({super.key, required this.domiciliariosList});  
+  const MyModalContent({super.key, required this.domiciliariosList}); 
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,8 @@ class MyModalContent extends StatelessWidget {
                           {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
                         ],
                         // ignore: non_constant_identifier_names
-                        onButtonPressed: (ID) {
-                          
+                        ButtonPressed: (ID) {
+                           
                         },
                         child: const Text("Asignarle el Pedido"),
                       ),

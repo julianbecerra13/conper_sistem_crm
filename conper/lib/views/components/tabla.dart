@@ -1,20 +1,20 @@
+import 'package:conper/models/domiciliario.dart';
+import 'package:conper/models/ordenes.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class Tabla extends StatelessWidget {
   final List<Map<String, dynamic>> data;
   final List<Map<String, dynamic>> headers;
-  final Function(int) onButtonPressed;
+  final Function(Map<String, dynamic>)ButtonPressed;
   final Widget child;
-  // Funcion que ejecuta el boton. Tiene que poder acceder al id del row
-
-  // el contenido que muestra el boton, puede ser icono o texto
+ 
 
   const Tabla(
       {Key? key,
       required this.data,
       required this.headers,
-      required this.onButtonPressed,
+      required this.ButtonPressed,
       required this.child})
       : super(key: key);
 
@@ -69,9 +69,11 @@ class Tabla extends StatelessWidget {
                 heightFactor: 1.5,
                 widthFactor: 1.5,
                 child: ElevatedButton(
-                  onPressed: () {
-                    onButtonPressed(rowData["idGeneral"]);
-                  },
+                  onPressed: 
+                    ButtonPressed(
+                      rowData,
+                    ),
+                  
                   child: child,
                 ),
               ))
