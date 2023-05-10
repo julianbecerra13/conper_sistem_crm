@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'package:conper/models/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,12 +43,20 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // Verificar la respuesta del servi1010197022dor
+      debugPrint("status code: ${response.statusCode}");
       if (response.statusCode == 200) {
+        debugPrint("status code 200");
         // Si la respuesta es exitosa, mostrar un diálogo de éxito
         // guardamos los datos de inicio de sesión en el almacenamiento local
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('username', _userController.text);
         await prefs.setString('password', _passwordController.text);
+
+        final login = Login.fromJson(jsonDecode(response.body));
+        debugPrint("login: ${login.nombre}, ${login.idPunto}, ${login.login} ");
+        await prefs.setString('nombre', login.nombre);
+        await prefs.setInt('IDPunto', login.idPunto);
+        await prefs.setString('login', login.login);
 
         VRouter.of(context).to('/trasabilidad');
         ScaffoldMessenger.of(context).showSnackBar(

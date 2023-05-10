@@ -215,10 +215,9 @@ class _PedidosState extends State<Pedidos> {
                                       },
                                     ],                             
                                     // ignore: non_constant_identifier_names
-                                    onButtonPressed: (ID, NombreTraza) {
-                                      print(ID);
-                                      print(NombreTraza);
-                                      _showModal(context);
+                                    onButtonPressed: (info) {
+                                      print(info);
+                                      _showModal(context, info);
                                     },
                                     child: const Icon(
                                       Icons.motorcycle,
@@ -243,12 +242,12 @@ class _PedidosState extends State<Pedidos> {
     );
   }
 
-  void _showModal(BuildContext context) {
+  void _showModal(BuildContext context, Map<String, dynamic> info) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: MyModalContent(domiciliariosList: domiciliariosList),
+          content: MyModalContent(domiciliariosList: domiciliariosList, informacion: info),
         );
       },
     );

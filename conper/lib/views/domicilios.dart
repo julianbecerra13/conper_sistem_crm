@@ -237,8 +237,8 @@ class _DomiciliosState extends State<Domicilios> {
                                       },
                                     ],
                                     // ignore: non_constant_identifier_names
-                                    onButtonPressed: (ID, index) {
-                                      _showModal(context,);
+                                    onButtonPressed: (info) {
+                                      _showModal(context,info);
                                     },
                                     child: const Icon(
                                       Icons.check,
@@ -262,12 +262,12 @@ class _DomiciliosState extends State<Domicilios> {
     );
   }
 
-  void _showModal(BuildContext context) {
+  void _showModal(BuildContext context, Map<String, dynamic> info ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: MyModalContent(domiciliariosList: domiciliariosList),
+          content: MyModalContent(domiciliariosList: domiciliariosList, informacion: info,),
         );
       },
     );
