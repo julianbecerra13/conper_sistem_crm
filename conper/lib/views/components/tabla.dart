@@ -1,5 +1,3 @@
-import 'package:conper/models/domiciliario.dart';
-import 'package:conper/models/ordenes.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -21,10 +19,12 @@ class Tabla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Table(
-      border: TableBorder.all(),
+      border: TableBorder.all(
+        borderRadius: BorderRadius.circular(10)
+      ),
       children: [
         TableRow(
-          decoration: const BoxDecoration(color: Colors.blue),
+          decoration: const BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.all(Radius.circular(10))),
           children: [
             ...headers.map(
               (cellData) => TableCell(
@@ -48,11 +48,13 @@ class Tabla extends StatelessWidget {
         ...data.map(
           (rowData) => TableRow(
             decoration: BoxDecoration(
+              
               color: rowData["NombreTraza"] == "Preparando"
                   ? const Color.fromARGB(255, 185, 255, 188)
                   : rowData["NombreTraza"] == "En Movil"
                       ? const Color.fromARGB(255, 229, 184, 255)
                       : const Color.fromARGB(255, 185, 223, 255),
+                      borderRadius: BorderRadius.circular(10),
             ),
             children: [
               // for each map

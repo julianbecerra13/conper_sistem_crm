@@ -9,7 +9,7 @@ class Menu extends StatelessWidget {
     return SizedBox(
       width: 270,
       child: Drawer(
-        elevation: 1,
+        elevation: 20,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [

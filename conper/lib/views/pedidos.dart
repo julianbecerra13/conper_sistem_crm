@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
+import 'package:vrouter/vrouter.dart';
 import '../models/domiciliario.dart';
 import 'components/modal.dart';
 import 'components/tabla.dart';
@@ -23,10 +24,9 @@ class _PedidosState extends State<Pedidos> {
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('username');
-    await prefs.remove('password');
+    await prefs.clear();
     // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
+    VRouter.of(context).to('/');
   }
 
   @override
@@ -53,11 +53,16 @@ class _PedidosState extends State<Pedidos> {
   }
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
+    final prefs = await SharedPreferences.getInstance();
+
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/pedidos?idCliente=1&idTraza=2&idPunto=60'));
+        'http://localhost:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=2&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
+      if (data == null) {
+        return [];
+      }
       orders = data.map((order) => Ordenes.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
@@ -72,8 +77,9 @@ class _PedidosState extends State<Pedidos> {
   }
 
   Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+    final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=1&idTraza=60'));
+        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
@@ -162,6 +168,7 @@ class _PedidosState extends State<Pedidos> {
                   ),
                   const SizedBox(height: 40),
                   Card(
+                    elevation: 20,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -189,40 +196,45 @@ class _PedidosState extends State<Pedidos> {
                                 child: SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height - 300,
-                                  child: Tabla(
-                                    data: ordersTraza,
-                                    headers: const [
-                                      {
-                                        "Titulo": 'ID orden',
-                                        "key": "idGeneral"
-                                      },
-                                      {
-                                        "Titulo": 'Nombre',
-                                        "key": "NombreCliente"
-                                      },
-                                      {
-                                        "Titulo": 'Direccion',
-                                        "key": "DireccionOrden"
-                                      },
-                                      {
-                                        "Titulo": 'Total de la orden',
-                                        "key": "TotalOrden"
-                                      },
-                                      {"Titulo": 'Fecha', "key": "FechaCrea"},
-                                      {
-                                        "Titulo": 'Estado',
-                                        "key": "NombreTraza"
-                                      },
-                                    ],                             
-                                    // ignore: non_constant_identifier_names
-                                    onButtonPressed: (info) {
-                                      print(info);
-                                      _showModal(context, info);
-                                    },
-                                    child: const Icon(
-                                      Icons.motorcycle,
-                                      color: Colors.white,
-                                      size: 30,
+                                  child: Card(
+                                    elevation: 8,
+                                    child: SingleChildScrollView(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Tabla(
+                                        data: ordersTraza,
+                                        headers: const [
+                                          {
+                                            "Titulo": 'ID orden',
+                                            "key": "idGeneral"
+                                          },
+                                          {
+                                            "Titulo": 'Nombre',
+                                            "key": "NombreCliente"
+                                          },
+                                          {
+                                            "Titulo": 'Direccion',
+                                            "key": "DireccionOrden"
+                                          },
+                                          {
+                                            "Titulo": 'Total de la orden',
+                                            "key": "TotalOrden"
+                                          },
+                                          {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                          {
+                                            "Titulo": 'Estado',
+                                            "key": "NombreTraza"
+                                          },
+                                        ],
+                                        // ignore: non_constant_identifier_names
+                                        onButtonPressed: (info) {
+                                          _showModal(context, info);
+                                        },
+                                        child: const Icon(
+                                          Icons.motorcycle,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -247,7 +259,8 @@ class _PedidosState extends State<Pedidos> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: MyModalContent(domiciliariosList: domiciliariosList, informacion: info),
+          content: MyModalContent(
+              domiciliariosList: domiciliariosList, informacion: info, opcion: 5),
         );
       },
     );

@@ -1,16 +1,21 @@
 // ignore: unused_import
 import 'package:conper/models/login.dart';
 import 'package:conper/views/domicilios.dart';
+import 'package:conper/views/login.dart';
 import 'package:conper/views/pedidos.dart';
+import 'package:conper/views/trasabilidad.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
-// ignore: unused_import
-import '/views/trasabilidad.dart';
-// ignore: unused_import
-import '/views/login.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+Future<bool> hasToken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int? token = prefs.getInt('IDPunto');
+  return token != null;
 }
 
 class MyApp extends StatelessWidget {
@@ -18,24 +23,46 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return VRouter(
+      mode: VRouterMode.history,
       title: 'Conper',
       debugShowCheckedModeBanner: false,
-      home: VRouter(
-        routes: [
-          // Aquí definimos nuestras rutas
-          VWidget(
-            path: '/',
-            widget: const Pedidos(),
-            stackedRoutes: [
-              VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
-              VWidget(path: '/pedidos', widget: const Pedidos()),
-              VWidget(path: '/domicilios', widget: const Domicilios()),
-             
-            ],
-          ),
-        ],
-      ),
+      initialUrl: '/trazabilidad',
+      routes: buildRoutes(),
     );
   }
+}
+
+List<VRouteElement> buildRoutes() {
+  return [
+    
+    VGuard(
+      beforeEnter: (vRedirector) async {
+        bool tokenExists = await hasToken();
+        if (!tokenExists) {
+          vRedirector.to('/login');
+        }
+      },
+      stackedRoutes: [
+        VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
+        VWidget(path: '/pedidos', widget: const Pedidos()),
+        VWidget(path: '/domicilios', widget: const Domicilios()),
+      ],
+    ),
+    VGuard(
+      beforeEnter: (vRedirector) async {
+        bool tokenExists = await hasToken();
+        if (tokenExists) {
+          vRedirector.to('/trasabilidad');
+        }
+      },
+      stackedRoutes: [
+        VWidget(path: '/login', widget: const LoginPage()),
+      ],
+    ),
+    VRouteRedirector(
+          redirectTo: '/login',
+          path: r'*',
+        ),
+  ];
 }

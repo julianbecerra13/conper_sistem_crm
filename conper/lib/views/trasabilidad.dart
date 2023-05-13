@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
+import 'package:vrouter/vrouter.dart';
 import '../models/ordenes.dart';
 import 'components/tabla.dart';
 import 'package:http/http.dart' as http;
@@ -17,14 +18,13 @@ class Trasabilidad extends StatefulWidget {
 }
 
 class _TrasabilidadState extends State<Trasabilidad> {
-  late List<Map<String, dynamic>> ordersTraza = [];
+  List<Map<String, dynamic>> ordersTraza = [];
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('username');
-    await prefs.remove('password');
+    await prefs.clear();
     // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
+    VRouter.of(context).to('/');
   }
 
   @override
@@ -42,11 +42,16 @@ class _TrasabilidadState extends State<Trasabilidad> {
   }
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
+    final prefs = await SharedPreferences.getInstance();
+
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=1&idTraza=6&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=6&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
+      if (data == null) {
+        return [];
+      }
       orders = data.map((order) => Ordenes.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
@@ -130,6 +135,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
                   ),
                   const SizedBox(height: 40),
                   Card(
+                    elevation: 20,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -157,39 +163,48 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                 child: SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height - 250,
-                                  child: SingleChildScrollView(
-                                    child: Tabla(
-                                      data: ordersTraza,
-                                      headers: const [
-                                        {
-                                          "Titulo": 'ID orden',
-                                          "key": "idGeneral"
+                                  child: Card(
+                                    elevation: 8,
+                                    child: SingleChildScrollView(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Tabla(
+                                        data: ordersTraza,
+                                        headers: const [
+                                          {
+                                            "Titulo": 'ID orden',
+                                            "key": "idGeneral"
+                                          },
+                                          {
+                                            "Titulo": 'Nombre',
+                                            "key": "NombreCliente"
+                                          },
+                                          {
+                                            "Titulo": 'Direccion',
+                                            "key": "DireccionOrden"
+                                          },
+                                          {
+                                            "Titulo": 'Total de la orden',
+                                            "key": "TotalOrden"
+                                          },
+                                          {
+                                            "Titulo": 'Fecha',
+                                            "key": "FechaCrea"
+                                          },
+                                          {
+                                            "Titulo": 'Estado',
+                                            "key": "NombreTraza"
+                                          },
+                                          {
+                                            "Titulo": 'Domiciliario',
+                                            "key": "domiciliario"
+                                          },
+                                        ],
+                                        // ignore: avoid_types_as_parameter_names
+                                        onButtonPressed: (info) {
+                                          _showModal(context, info);
                                         },
-                                        {
-                                          "Titulo": 'Nombre',
-                                          "key": "NombreCliente"
-                                        },
-                                        {
-                                          "Titulo": 'Direccion',
-                                          "key": "DireccionOrden"
-                                        },
-                                        {
-                                          "Titulo": 'Total de la orden',
-                                          "key": "TotalOrden"
-                                        },
-                                        {"Titulo": 'Fecha', "key": "FechaCrea"},
-                                        {
-                                          "Titulo": 'Estado',
-                                          "key": "NombreTraza"
-                                        },
-                                        {
-                                          "Titulo": 'Domiciliario',
-                                          "key": "domiciliario"
-                                        }
-                                      ],
-                                      // ignore: avoid_types_as_parameter_names
-                                      onButtonPressed: (ID) {},
-                                      child: const Text("Detalles"),
+                                        child: const Text("Detalles"),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -206,6 +221,37 @@ class _TrasabilidadState extends State<Trasabilidad> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showModal(BuildContext context, Map<String, dynamic> info) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Detalles de la orden",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text("ID orden: ${info['idGeneral']}"),
+              Text("Nombre: ${info['NombreCliente']}"),
+              Text("Direccion: ${info['DireccionOrden']}"),
+              Text("Total de la orden: ${info['TotalOrden']}"),
+              Text("Fecha: ${info['FechaCrea']}"),
+              Text("Domiciliario: ${info['domiciliario']}"),
+              Text("Estado: ${info['NombreTraza']}"),
+            ],
+          ),
+        );
+      },
     );
   }
 }

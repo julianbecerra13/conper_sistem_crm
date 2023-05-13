@@ -2,6 +2,7 @@ import 'package:conper/models/domiciliario.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
+import 'package:vrouter/vrouter.dart';
 import 'components/tabla.dart';
 import 'components/modal.dart';
 import 'dart:convert';
@@ -21,10 +22,9 @@ class _DomiciliosState extends State<Domicilios> {
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('username');
-    await prefs.remove('password');
+    await prefs.clear();
     // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
+    VRouter.of(context).to('/');
   }
 
   @override
@@ -52,8 +52,10 @@ class _DomiciliosState extends State<Domicilios> {
 
   // ignore: unused_element
   Future<List<Map<String, dynamic>>> _getOrders() async {
+    final prefs = await SharedPreferences.getInstance();
+
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=1&idTraza=5&idPunto=60'));
+        'http://localhost:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=5&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -71,10 +73,11 @@ class _DomiciliosState extends State<Domicilios> {
   }
 
   Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+    final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=1&idTraza=60'));
+        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
     List<dynamic> domici = [];
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200) { 
       final data = json.decode(response.body)["domiciliarios"];
       domici = data
           .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
@@ -161,6 +164,7 @@ class _DomiciliosState extends State<Domicilios> {
                   ),
                   const SizedBox(height: 20),
                   Card(
+                    elevation: 20,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -207,42 +211,48 @@ class _DomiciliosState extends State<Domicilios> {
                                 child: SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height - 300,
-                                  child: Tabla(
-                                    data: ordersTraza,
-                                    headers: const [
-                                      {
-                                        "Titulo": 'ID orden',
-                                        "key": "idGeneral"
-                                      },
-                                      {
-                                        "Titulo": 'Nombre',
-                                        "key": "NombreCliente"
-                                      },
-                                      {
-                                        "Titulo": 'Direccion',
-                                        "key": "DireccionOrden"
-                                      },
-                                      {
-                                        "Titulo": 'Total de la orden',
-                                        "key": "TotalOrden"
-                                      },
-                                      {"Titulo": 'Fecha', "key": "FechaCrea"},
-                                      {
-                                        "Titulo": 'Estado',
-                                        "key": "NombreTraza"
-                                      },
-                                      {
-                                        "Titulo": 'Domiciliario',
-                                        "key": "domiciliario"
-                                      },
-                                    ],
-                                    // ignore: non_constant_identifier_names
-                                    onButtonPressed: (info) {
-                                      _showModal(context,info);
-                                    },
-                                    child: const Icon(
-                                      Icons.check,
-                                      color: Colors.white,
+                                  child: Card(
+                                    elevation: 8,
+                                    child: SingleChildScrollView(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Tabla(
+                                        data: ordersTraza,
+                                        headers: const [
+                                          {
+                                            "Titulo": 'ID orden',
+                                            "key": "idGeneral"
+                                          },
+                                          {
+                                            "Titulo": 'Nombre',
+                                            "key": "NombreCliente"
+                                          },
+                                          {
+                                            "Titulo": 'Direccion',
+                                            "key": "DireccionOrden"
+                                          },
+                                          {
+                                            "Titulo": 'Total de la orden',
+                                            "key": "TotalOrden"
+                                          },
+                                          {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                          {
+                                            "Titulo": 'Estado',
+                                            "key": "NombreTraza"
+                                          },
+                                          {
+                                            "Titulo": 'Domiciliario',
+                                            "key": "domiciliario"
+                                          },
+                                        ],
+                                        // ignore: non_constant_identifier_names
+                                        onButtonPressed: (info) {
+                                          _showModal(context, info);
+                                        },
+                                        child: const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -262,12 +272,16 @@ class _DomiciliosState extends State<Domicilios> {
     );
   }
 
-  void _showModal(BuildContext context, Map<String, dynamic> info ) {
+  void _showModal(BuildContext context, Map<String, dynamic> info) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: MyModalContent(domiciliariosList: domiciliariosList, informacion: info,),
+          content: MyModalContent(
+            domiciliariosList: domiciliariosList,
+            informacion: info,
+            opcion: 6
+          ),
         );
       },
     );
