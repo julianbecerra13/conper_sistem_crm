@@ -11,14 +11,14 @@ import '../models/ordenes.dart';
 
 // _logOut(context); // llamar a la función _logOut
 
-class Pedidos extends StatefulWidget {
-  const Pedidos({Key? key}) : super(key: key);
+class PedidosEstancados extends StatefulWidget {
+  const PedidosEstancados({Key? key}) : super(key: key);
 
   @override
-  State<Pedidos> createState() => _PedidosState();
+  State<PedidosEstancados> createState() => _PedidosState();
 }
 
-class _PedidosState extends State<Pedidos> {
+class _PedidosState extends State<PedidosEstancados> {
   late List<Map<String, dynamic>> ordersTraza = [];
   late List<Map<String, dynamic>> ordersTraza1 = [];
   List<Map<String, dynamic>> domiciliariosList = [];
@@ -57,7 +57,7 @@ class _PedidosState extends State<Pedidos> {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=2&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://localhost:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=1&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -185,7 +185,7 @@ class _PedidosState extends State<Pedidos> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: const [
                                   Text(
-                                    "PEDIDOS",
+                                    "PEDIDOS ESTANCADOS",
                                     style: TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
@@ -231,7 +231,7 @@ class _PedidosState extends State<Pedidos> {
                                           _showModal(context, info);
                                         },
                                         child: const Icon(
-                                          Icons.motorcycle,
+                                          Icons.arrow_downward,
                                           color: Colors.white,
                                           size: 30,
                                         ),
@@ -261,7 +261,7 @@ class _PedidosState extends State<Pedidos> {
       builder: (BuildContext context) {
         return AlertDialog(
           content: MyModalContent(
-              domiciliariosList: domiciliariosList, informacion: info, opcion: 5),
+              domiciliariosList: domiciliariosList, informacion: info, opcion: 2),
         );
       },
     );

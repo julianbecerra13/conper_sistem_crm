@@ -2,6 +2,7 @@
 import 'package:conper/models/login.dart';
 import 'package:conper/views/domicilios.dart';
 import 'package:conper/views/login.dart';
+import 'package:conper/views/p_estancados.dart';
 import 'package:conper/views/pedidos.dart';
 import 'package:conper/views/trasabilidad.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ List<VRouteElement> buildRoutes() {
       stackedRoutes: [
         VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
         VWidget(path: '/pedidos', widget: const Pedidos()),
+        VWidget(path: '/p_estancados', widget: const PedidosEstancados()),
         VWidget(path: '/domicilios', widget: const Domicilios()),
       ],
     ),

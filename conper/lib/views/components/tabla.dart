@@ -53,7 +53,9 @@ class Tabla extends StatelessWidget {
                   ? const Color.fromARGB(255, 185, 255, 188)
                   : rowData["NombreTraza"] == "En Movil"
                       ? const Color.fromARGB(255, 229, 184, 255)
-                      : const Color.fromARGB(255, 185, 223, 255),
+                        : rowData["NombreTraza"] == "Recepción"
+                          ?const Color.fromARGB(255, 255, 185, 185)
+                          : const Color.fromARGB(255, 185, 223, 255),
                       borderRadius: BorderRadius.circular(10),
             ),
             children: [

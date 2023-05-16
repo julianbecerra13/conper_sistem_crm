@@ -3,7 +3,7 @@ import 'package:vrouter/vrouter.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -18,15 +18,22 @@ class Menu extends StatelessWidget {
                 image: AssetImage('images/logo.png'),
               ),
             ),
-            // ListTile(
-            //   title: const Text('Home'),
-            //   onTap: () {
-            //     // Update the state of the app
-            //     VRouter.of(context).to('/dashboard');
-            //     // Then close the drawer
-            //     // Navigator.pop(context);
-            //   },
-            // ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(158, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                title: const Text('Pedidos Estancados',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                leading:
+                    const Icon(Icons.dangerous, color: Colors.red),
+                onTap: () {
+                  VRouter.of(context).to('/p_estancados');
+                },
+              ),
+            ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(

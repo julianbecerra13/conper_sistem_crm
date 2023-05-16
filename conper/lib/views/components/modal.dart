@@ -41,31 +41,37 @@ class MyModalContent extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height - 300,
-                    child: Tabla(
-                      data: domiciliariosList,
-                      headers: const [
-                        {"Titulo": "Nombre", "key": "nombre"},
-                        {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
-                      ],
-
-                      // ignore: non_constant_identifier_names
-                      onButtonPressed: (Domicilio) async {
-                        final prefs = await SharedPreferences.getInstance();
-                        await http
-                            .put(Uri.parse('http://localhost:8080/actualizar'),
-                                body: json.encode({
-                                  "idPunto": prefs.getInt("IDPunto"),
-                                  "idPedido": informacion["idGeneral"],
-                                  "idTraza": opcion,
-                                  "idDomiciliario": Domicilio["idDomiciliario"]
-                                }))
-                            .then((response) {
-                          if (response.statusCode == 200) {
-                            context.vRouter.to('/pedidos');
-                          }
-                        });
-                      },
-                      child: const Text("Asignarle el Pedido"),
+                    child: Card(
+                      elevation: 8,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(10),
+                        child: Tabla(
+                          data: domiciliariosList,
+                          headers: const [
+                            {"Titulo": "Nombre", "key": "nombre"},
+                            {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
+                          ],
+                      
+                          // ignore: non_constant_identifier_names
+                          onButtonPressed: (Domicilio) async {
+                            final prefs = await SharedPreferences.getInstance();
+                            await http
+                                .put(Uri.parse('http://localhost:8080/actualizar'),
+                                    body: json.encode({
+                                      "idPunto": prefs.getInt("IDPunto"),
+                                      "idPedido": informacion["idGeneral"],
+                                      "idTraza": opcion,
+                                      "idDomiciliario": Domicilio["idDomiciliario"]
+                                    }))
+                                .then((response) {
+                              if (response.statusCode == 200) {
+                                context.vRouter.to('/pedidos');
+                              }
+                            });
+                          },
+                          child: const Text("Asignarle el Pedido"),
+                        ),
+                      ),
                     ),
                   ),
                 ),
