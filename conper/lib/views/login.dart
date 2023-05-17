@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                '¡Inicio de sesión exitoso! Bienvenido, ${_userController.text}'),
+                '¡Inicio de sesión exitoso! Bienvenido, ${prefs.getString('nombre')}'),
             duration: const Duration(seconds: 6),
             action: SnackBarAction(
               label: 'Aceptar',

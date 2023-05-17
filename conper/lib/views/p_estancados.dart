@@ -220,15 +220,48 @@ class _PedidosState extends State<PedidosEstancados> {
                                             "Titulo": 'Total de la orden',
                                             "key": "TotalOrden"
                                           },
-                                          {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                          {
+                                            "Titulo": 'Fecha',
+                                            "key": "FechaCrea"
+                                          },
                                           {
                                             "Titulo": 'Estado',
                                             "key": "NombreTraza"
                                           },
                                         ],
                                         // ignore: non_constant_identifier_names
-                                        onButtonPressed: (info) {
-                                          _showModal(context, info);
+                                        onButtonPressed: (info) async {
+                                          final prefs = await SharedPreferences
+                                              .getInstance();
+                                          await http
+                                              .put(
+                                                  Uri.parse(
+                                                      'http://localhost:8080/actualizarT'),
+                                                  body: json.encode({
+                                                    "idPunto":
+                                                        prefs.getInt("IDPunto"),
+                                                    "idPedido":
+                                                        info["idGeneral"],
+                                                    "idTraza": 2,
+                                                  }))
+                                              .then((response) {
+                                            if (response.statusCode == 200) {
+                                              //eliminar de la lista
+                                              setState(() {
+                                                ordersTraza.removeWhere(
+                                                    (element) =>
+                                                        element["idGeneral"] ==
+                                                        info["idGeneral"]);
+                                              });
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Pedido actualizado'),
+                                                ),
+                                              );
+                                            }
+                                          });
                                         },
                                         child: const Icon(
                                           Icons.arrow_downward,
@@ -252,18 +285,6 @@ class _PedidosState extends State<PedidosEstancados> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showModal(BuildContext context, Map<String, dynamic> info) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: MyModalContent(
-              domiciliariosList: domiciliariosList, informacion: info, opcion: 2),
-        );
-      },
     );
   }
 }

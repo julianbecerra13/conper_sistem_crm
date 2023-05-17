@@ -77,7 +77,7 @@ class _DomiciliosState extends State<Domicilios> {
     final response = await http.get(Uri.parse(
         'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
     List<dynamic> domici = [];
-    if (response.statusCode == 200) { 
+    if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
       domici = data
           .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
@@ -234,7 +234,10 @@ class _DomiciliosState extends State<Domicilios> {
                                             "Titulo": 'Total de la orden',
                                             "key": "TotalOrden"
                                           },
-                                          {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                          {
+                                            "Titulo": 'Fecha',
+                                            "key": "FechaCrea"
+                                          },
                                           {
                                             "Titulo": 'Estado',
                                             "key": "NombreTraza"
@@ -245,8 +248,37 @@ class _DomiciliosState extends State<Domicilios> {
                                           },
                                         ],
                                         // ignore: non_constant_identifier_names
-                                        onButtonPressed: (info) {
-                                          _showModal(context, info);
+                                        onButtonPressed: (info) async {
+                                          final prefs = await SharedPreferences
+                                              .getInstance();
+                                          await http
+                                              .put(
+                                                  Uri.parse(
+                                                      'http://localhost:8080/actualizarT'),
+                                                  body: json.encode({
+                                                    "idPunto":
+                                                        prefs.getInt("IDPunto"),
+                                                    "idPedido":
+                                                        info["idGeneral"],
+                                                    "idTraza": 6,
+                                                  }))
+                                              .then((response) {
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                ordersTraza.removeWhere(
+                                                    (element) =>
+                                                        element["idGeneral"] ==
+                                                        info["idGeneral"]);
+                                              });
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Se ha actualizado el estado del pedido'),
+                                                ),
+                                              );
+                                            }
+                                          });
                                         },
                                         child: const Icon(
                                           Icons.check,
@@ -269,21 +301,6 @@ class _DomiciliosState extends State<Domicilios> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showModal(BuildContext context, Map<String, dynamic> info) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: MyModalContent(
-            domiciliariosList: domiciliariosList,
-            informacion: info,
-            opcion: 6
-          ),
-        );
-      },
     );
   }
 }
