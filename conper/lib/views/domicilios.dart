@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
 import 'package:vrouter/vrouter.dart';
 import 'components/tabla.dart';
-import 'components/modal.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/ordenes.dart';
@@ -176,10 +175,10 @@ class _DomiciliosState extends State<Domicilios> {
                         child: Container(
                           child: Column(
                             children: [
-                              Row(
+                              const Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: const [
+                                children: [
                                   Text(
                                     "DOMICILIOS",
                                     style: TextStyle(

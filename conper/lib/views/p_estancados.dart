@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
 import 'package:vrouter/vrouter.dart';
 import '../models/domiciliario.dart';
-import 'components/modal.dart';
 import 'components/tabla.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -20,7 +19,6 @@ class PedidosEstancados extends StatefulWidget {
 
 class _PedidosState extends State<PedidosEstancados> {
   late List<Map<String, dynamic>> ordersTraza = [];
-  late List<Map<String, dynamic>> ordersTraza1 = [];
   List<Map<String, dynamic>> domiciliariosList = [];
 
   Future<void> _logOut(BuildContext context) async {
