@@ -27,6 +27,7 @@ class MyModalContent extends StatelessWidget {
             height: MediaQuery.of(context).size.height - 200,
             child: Column(
               children: [
+                // ignore: prefer_const_constructors
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [

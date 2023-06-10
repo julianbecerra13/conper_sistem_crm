@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
 
 class Menu extends StatelessWidget {
@@ -27,8 +28,7 @@ class Menu extends StatelessWidget {
               child: ListTile(
                 title: const Text('Pedidos Estancados',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                leading:
-                    const Icon(Icons.dangerous, color: Colors.red),
+                leading: const Icon(Icons.dangerous, color: Colors.red),
                 onTap: () {
                   VRouter.of(context).to('/p_estancados');
                 },
@@ -87,6 +87,48 @@ class Menu extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
+            Container(
+                width: 10,
+                height: 30,
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(color: Colors.blue, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      // ignore: avoid_print
+                      print(prefs.getInt('IDPunto'));
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    child: const Text("Novedades"))),
+            const SizedBox(height: 5),
+            Container(
+                width: 10,
+                height: 30,
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(color: Colors.blue, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      // ignore: avoid_print
+                      print(prefs.getInt('IDPunto'));
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    child: const Text("Prueba de Impresora"))),
           ],
         ),
       ),

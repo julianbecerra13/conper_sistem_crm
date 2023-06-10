@@ -1,4 +1,4 @@
-import 'package:conper/models/domiciliario.dart';
+import 'package:conper/views/components/modald.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
@@ -21,6 +21,7 @@ class _DomiciliosState extends State<Domicilios> {
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
+
     await prefs.clear();
     // ignore: use_build_context_synchronously
     VRouter.of(context).to('/');
@@ -30,21 +31,12 @@ class _DomiciliosState extends State<Domicilios> {
   void initState() {
     super.initState();
     getOrders();
-    getDomiciliarios();
   }
 
   void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
         ordersTraza = value;
-      });
-    });
-  }
-
-  void getDomiciliarios() async {
-    await _getDomiciliarios().then((value) {
-      setState(() {
-        domiciliariosList = value;
       });
     });
   }
@@ -69,28 +61,6 @@ class _DomiciliosState extends State<Domicilios> {
       orderMap.add(order.toJson());
     }
     return orderMap;
-  }
-
-  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
-    final prefs = await SharedPreferences.getInstance();
-    final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
-    List<dynamic> domici = [];
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body)["domiciliarios"];
-      domici = data
-          .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
-          .toList();
-    } else {
-      throw Exception('Failed to load domiciliarios');
-    }
-
-    List<Map<String, dynamic>> domiciliariosMap = [];
-
-    for (var domiciliario in domici) {
-      domiciliariosMap.add(domiciliario.toJson());
-    }
-    return domiciliariosMap;
   }
 
   @override
@@ -243,7 +213,7 @@ class _DomiciliosState extends State<Domicilios> {
                                           },
                                           {
                                             "Titulo": 'Domiciliario',
-                                            "key": "domiciliario"
+                                            "key": "NombreDomiciliario"
                                           },
                                         ],
                                         // ignore: non_constant_identifier_names
@@ -279,6 +249,10 @@ class _DomiciliosState extends State<Domicilios> {
                                             }
                                           });
                                         },
+                                        onOptionalButtonPressed: (inf) {
+                                          _showModalDetalles(context, inf);
+                                        },
+                                        showOptionalButton: true,
                                         child: const Icon(
                                           Icons.check,
                                           color: Colors.white,
@@ -300,6 +274,18 @@ class _DomiciliosState extends State<Domicilios> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showModalDetalles(BuildContext context, inf) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: MyModalContentD(
+          inf: inf,
+        ));
+      },
     );
   }
 }

@@ -1,8 +1,8 @@
+import 'package:conper/views/components/modald.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
 import 'package:vrouter/vrouter.dart';
-import '../models/domiciliario.dart';
 import 'components/tabla.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -32,7 +32,6 @@ class _PedidosState extends State<PedidosEstancados> {
   void initState() {
     super.initState();
     getOrders();
-    getDomiciliarios();
   }
 
   void getOrders() async {
@@ -43,13 +42,6 @@ class _PedidosState extends State<PedidosEstancados> {
     });
   }
 
-  void getDomiciliarios() async {
-    await _getDomiciliarios().then((value) {
-      setState(() {
-        domiciliariosList = value;
-      });
-    });
-  }
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final prefs = await SharedPreferences.getInstance();
@@ -75,27 +67,7 @@ class _PedidosState extends State<PedidosEstancados> {
     return orderMap;
   }
 
-  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
-    final prefs = await SharedPreferences.getInstance();
-    final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
-    List<dynamic> domici = [];
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body)["domiciliarios"];
-      domici = data
-          .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
-          .toList();
-    } else {
-      throw Exception('Failed to load domiciliarios');
-    }
 
-    List<Map<String, dynamic>> domiciliariosMap = [];
-
-    for (var domiciliario in domici) {
-      domiciliariosMap.add(domiciliario.toJson());
-    }
-    return domiciliariosMap;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,9 +151,9 @@ class _PedidosState extends State<PedidosEstancados> {
                         child: Container(
                           child: Column(
                             children: [
-                              Row(
+                              const Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children: const [
+                                children: [
                                   Text(
                                     "PEDIDOS ESTANCADOS",
                                     style: TextStyle(
@@ -261,6 +233,10 @@ class _PedidosState extends State<PedidosEstancados> {
                                             }
                                           });
                                         },
+                                        onOptionalButtonPressed: (inf) {
+                                          _showModalDetalles(context, inf);
+                                        },
+                                        showOptionalButton: true,
                                         child: const Icon(
                                           Icons.arrow_downward,
                                           color: Colors.white,
@@ -283,6 +259,17 @@ class _PedidosState extends State<PedidosEstancados> {
           ),
         ],
       ),
+    );
+  }
+  void _showModalDetalles(BuildContext context, inf) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: MyModalContentD(
+          inf: inf,
+        ));
+      },
     );
   }
 }

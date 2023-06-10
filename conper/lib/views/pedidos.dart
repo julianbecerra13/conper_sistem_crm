@@ -1,3 +1,4 @@
+import 'package:conper/views/components/modald.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:conper/views/components/menu.dart';
@@ -17,13 +18,13 @@ class Pedidos extends StatefulWidget {
 }
 
 class _PedidosState extends State<Pedidos> {
-  late List<Map<String, dynamic>> ordersTraza = [];
   List<Map<String, dynamic>> domiciliariosList = [];
   List<Map<String, dynamic>> updatedOrdersTraza = [];
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    // ignore: use_build_context_synchronously
     VRouter.of(context).to('/');
   }
 
@@ -81,6 +82,9 @@ class _PedidosState extends State<Pedidos> {
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
+      if (data == null) {
+        return [];
+      }
       domici = data
           .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
           .toList();
@@ -124,6 +128,7 @@ class _PedidosState extends State<Pedidos> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Flexible(
+                            // ignore: sized_box_for_whitespace
                             child: Container(
                               height: 40,
                               child: const TextField(
@@ -173,69 +178,72 @@ class _PedidosState extends State<Pedidos> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  "PEDIDOS",
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height - 300,
-                                child: Card(
-                                  elevation: 8,
-                                  child: SingleChildScrollView(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Tabla(
-                                      data: updatedOrdersTraza,
-                                      headers: const [
-                                        {
-                                          "Titulo": 'ID orden',
-                                          "key": "idGeneral"
-                                        },
-                                        {
-                                          "Titulo": 'Nombre',
-                                          "key": "NombreCliente"
-                                        },
-                                        {
-                                          "Titulo": 'Direccion',
-                                          "key": "DireccionOrden"
-                                        },
-                                        {
-                                          "Titulo": 'Total de la orden',
-                                          "key": "TotalOrden"
-                                        },
-                                        {"Titulo": 'Fecha', "key": "FechaCrea"},
-                                        {
-                                          "Titulo": 'Estado',
-                                          "key": "NombreTraza"
-                                        },
-                                      ],
-                                      onButtonPressed: (info) {
-                                        _showModal(context, info);
+                      child: Column(
+                        children: [
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "PEDIDOS",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height - 300,
+                              child: Card(
+                                elevation: 8,
+                                child: SingleChildScrollView(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Tabla(
+                                    data: updatedOrdersTraza,
+                                    headers: const [
+                                      {
+                                        "Titulo": 'ID orden',
+                                        "key": "idGeneral"
                                       },
-                                      child: const Icon(
-                                        Icons.motorcycle,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
+                                      {
+                                        "Titulo": 'Nombre',
+                                        "key": "NombreCliente"
+                                      },
+                                      {
+                                        "Titulo": 'Direccion',
+                                        "key": "DireccionOrden"
+                                      },
+                                      {
+                                        "Titulo": 'Total de la orden',
+                                        "key": "TotalOrden"
+                                      },
+                                      {"Titulo": 'Fecha', "key": "FechaCrea"},
+                                      {
+                                        "Titulo": 'Estado',
+                                        "key": "NombreTraza"
+                                      },
+                                    ],
+                                    onButtonPressed: (info) {
+                                      _showModal(context, info);
+                                    },
+                                    // ignore: sort_child_properties_last
+                                    child: const Icon(
+                                      Icons.motorcycle,
+                                      color: Colors.white,
+                                      size: 30,
                                     ),
+                                    onOptionalButtonPressed: (inf) async {
+                                      _showModalDetalles(context, inf);
+                                    },
+                                    showOptionalButton: true,
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -258,6 +266,18 @@ class _PedidosState extends State<Pedidos> {
               informacion: info,
               opcion: 5),
         );
+      },
+    );
+  }
+
+  void _showModalDetalles(BuildContext context, inf) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: MyModalContentD(
+          inf: inf,
+        ));
       },
     );
   }
