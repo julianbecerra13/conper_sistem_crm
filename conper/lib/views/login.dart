@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Future<void> login() async {
       // URL de la API de inicio de sesión
-      final url = Uri.parse('http://0.0.0.0:8080/login');
+      final url = Uri.parse('http://localhost:8080/login');
 
       // Crear el cuerpo de la solicitud con los datos del usuario y contraseña
       final body = jsonEncode({

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Menu extends StatelessWidget {
   const Menu({super.key});
@@ -121,8 +123,17 @@ class Menu extends StatelessWidget {
                 child: TextButton(
                     onPressed: () async {
                       final prefs = await SharedPreferences.getInstance();
-                      // ignore: avoid_print
-                      print(prefs.getInt('IDPunto'));
+                      await http
+                          .put(Uri.parse('http://localhost:8080/impresora'),
+                              body: json
+                                  .encode({'idPunto': prefs.getInt('IDPunto')}))
+                          .then((response) {
+                        if (response.statusCode == 200) {
+                          _showModalImpresora(context);
+                        } else {
+                          debugPrint("Error al enviar la prueba de impresora");
+                        }
+                      });
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -132,6 +143,15 @@ class Menu extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showModalImpresora(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(content: Text("Prueba de Impresora Enviada"));
+      },
     );
   }
 }
