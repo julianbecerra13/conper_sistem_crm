@@ -228,14 +228,10 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                           },
                                         ],
                                         // ignore: avoid_types_as_parameter_names
-                                        onButtonPressed: (info) {
-                                          _showModal(context, info);
-                                        },
-                                        onOptionalButtonPressed: (inf) {
+                                        onButtonPressed: (inf) {
                                           _showModalDetalles(context, inf);
                                         },
-                                        showOptionalButton: true,
-                                        child: const Text("Asignar"),
+                                        child: const Text("Detalles"),
                                       ),
                                     ),
                                   ),
@@ -256,40 +252,10 @@ class _TrasabilidadState extends State<Trasabilidad> {
     );
   }
 
-  void _showModal(BuildContext context, Map<String, dynamic> info) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Detalles de la orden",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text("ID orden: ${info['idGeneral']}"),
-              Text("Nombre: ${info['NombreCliente']}"),
-              Text("Direccion: ${info['DireccionOrden']}"),
-              Text("Total de la orden: ${info['TotalOrden']}"),
-              Text("Fecha: ${info['FechaCrea']}"),
-              Text("Domiciliario: ${info['NombreDomiciliario']}"),
-              Text("Estado: ${info['NombreTraza']}"),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
+  
   Future<List<Map<String, dynamic>>> _getDomis(value) async {
     final response = await http.put(
-        Uri.parse('http://0.0.0.0:8080/aggdomiciliarios'),
+        Uri.parse('http://localhost:8080/aggdomiciliarios'),
         body: json.encode({"cedula": value}));
     List<dynamic> domi = [];
     if (response.statusCode == 200) {
@@ -555,7 +521,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                             await http
                                                 .put(
                                                     Uri.parse(
-                                                        'http://0.0.0.0:8080/aggdomiciliariosn2'),
+                                                        'http://localhost:8080/aggdomiciliariosn2'),
                                                     body: json.encode({
                                                       "Nivel": "3",
                                                       "cedula":

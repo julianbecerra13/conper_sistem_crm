@@ -101,9 +101,7 @@ class Menu extends StatelessWidget {
                 ),
                 child: TextButton(
                     onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      // ignore: avoid_print
-                      print(prefs.getInt('IDPunto'));
+                      VRouter.of(context).to('/novedades');
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -154,4 +152,5 @@ class Menu extends StatelessWidget {
       },
     );
   }
+  
 }
