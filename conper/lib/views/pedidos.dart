@@ -106,7 +106,7 @@ class _PedidosState extends State<Pedidos> {
     return Scaffold(
         body: Row(
       children: [
-        const Menu(),
+        Menu(),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

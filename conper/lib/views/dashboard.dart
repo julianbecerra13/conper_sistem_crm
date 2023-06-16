@@ -21,7 +21,7 @@ class Dashboard extends StatelessWidget {
     return Scaffold(
       body: Row(
         children: [
-          const Menu(),
+          Menu(),
           Expanded(
             child: Column(
               children: [

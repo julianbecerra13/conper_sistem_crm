@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Menu extends StatelessWidget {
-  const Menu({super.key});
+  Menu({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +138,25 @@ class Menu extends StatelessWidget {
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     child: const Text("Prueba de Impresora"))),
+            const SizedBox(height: 5),
+            Container(
+                width: 10,
+                height: 30,
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(color: Colors.blue, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextButton(
+                    onPressed: () async {
+                      _showModalArchivoPost(context);
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    child: const Text("Generar Archivo Post"))),
           ],
         ),
       ),
@@ -152,5 +171,153 @@ class Menu extends StatelessWidget {
       },
     );
   }
-  
+
+  final TextEditingController fechaController = TextEditingController();
+  void _showModalArchivoPost(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return SizedBox(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Archivo Post",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Card(
+                    elevation: 8,
+                    child: Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 200,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    width: 200,
+                                    child: TextFormField(
+                                      controller: fechaController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Fecha Formato aaaa-mm-dd',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Por favor ingrese la Fecha';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final prefs = await SharedPreferences
+                                            .getInstance();
+                                        await http
+                                            .put(
+                                                Uri.parse(
+                                                    'http://localhost:8080/archivopost'),
+                                                body: json.encode({
+                                                  "FechaInicio":
+                                                      fechaController.text,
+                                                  "IDPunto":
+                                                      prefs.getInt('IDPunto'),
+                                                }))
+                                            .then((response) {
+                                          if (response.statusCode == 200) {
+                                            Navigator.pop(context);
+                                            _showModalresponse(
+                                                context, response);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'Algo anda mal...')));
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width: 200,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: Colors.blue,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(12.0),
+                                          child: Text(
+                                            'Generar Archivo POST',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            );
+          }),
+        );
+      },
+    );
+  }
+
+  void _showModalresponse(BuildContext context, response) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Text("${response.body}"),
+            const SizedBox(height: 10),
+            const Text(
+                "Recuerda revisar la ruta donde se almacena los archivos POST"),
+          ],
+        ));
+      },
+    );
+  }
 }
