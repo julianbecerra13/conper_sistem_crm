@@ -157,6 +157,24 @@ class Menu extends StatelessWidget {
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     child: const Text("Generar Archivo Post"))),
+            Container(
+                width: 10,
+                height: 30,
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 33, 243, 117),
+                  border: Border.all(color: const Color.fromARGB(255, 33, 243, 117), width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextButton(
+                    onPressed: () async {
+                      VRouter.of(context).to('/pqrs');
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    child: const Text("PQRS"))),
           ],
         ),
       ),

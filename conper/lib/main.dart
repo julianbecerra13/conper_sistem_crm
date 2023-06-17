@@ -5,6 +5,7 @@ import 'package:conper/views/login.dart';
 import 'package:conper/views/novedades.dart';
 import 'package:conper/views/p_estancados.dart';
 import 'package:conper/views/pedidos.dart';
+import 'package:conper/views/pqrs.dart';
 import 'package:conper/views/trasabilidad.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +51,8 @@ List<VRouteElement> buildRoutes() {
         VWidget(path: '/pedidos', widget: const Pedidos()),
         VWidget(path: '/p_estancados', widget: const PedidosEstancados()),
         VWidget(path: '/domicilios', widget: const Domicilios()),
-        VWidget(path: '/novedades', widget: const Novedades())
+        VWidget(path: '/novedades', widget: const Novedades()),
+        VWidget(path: '/pqrs', widget: const Pqrs())
       ],
     ),
     VGuard(

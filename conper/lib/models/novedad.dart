@@ -4,6 +4,7 @@ class Nove{
   late String marca;
   late String nombrePuntoVenta;
   late String novedad;
+  late String descripcion;
   late String fechaCrea;
 
   Nove({
@@ -11,6 +12,7 @@ class Nove{
     required this.marca,
     required this.nombrePuntoVenta,
     required this.novedad,
+    required this.descripcion,
     required this.fechaCrea,
   });
 
@@ -20,6 +22,7 @@ class Nove{
       marca: json['Marca'] as String,
       nombrePuntoVenta: json['NombrePuntoVenta'] as String,
       novedad: json['Novedad'] as String,
+      descripcion: json['Descripcion'] as String,
       fechaCrea: json['FechaCrea'] as String,
     );
   }
@@ -31,6 +34,7 @@ class Nove{
       'Marca': marca,
       'NombrePuntoVenta': nombrePuntoVenta,
       'Novedad': novedad,
+      'Descripcion': descripcion,
       'FechaCrea': fechaCrea,
     };
   }
