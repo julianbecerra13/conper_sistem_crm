@@ -1,15 +1,13 @@
-// ignore: unused_import
-import 'package:conper/models/login.dart';
-import 'package:conper/views/domicilios.dart';
-import 'package:conper/views/login.dart';
-import 'package:conper/views/novedades.dart';
-import 'package:conper/views/p_estancados.dart';
-import 'package:conper/views/pedidos.dart';
-import 'package:conper/views/pqrs.dart';
-import 'package:conper/views/trasabilidad.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
+import 'views/domicilios.dart';
+import 'views/login.dart';
+import 'views/novedades.dart';
+import 'views/p_estancados.dart';
+import 'views/pedidos.dart';
+import 'views/pqrs.dart';
+import 'views/trasabilidad.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +20,7 @@ Future<bool> hasToken() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +36,6 @@ class MyApp extends StatelessWidget {
 
 List<VRouteElement> buildRoutes() {
   return [
-    
     VGuard(
       beforeEnter: (vRedirector) async {
         bool tokenExists = await hasToken();
@@ -52,7 +49,7 @@ List<VRouteElement> buildRoutes() {
         VWidget(path: '/p_estancados', widget: const PedidosEstancados()),
         VWidget(path: '/domicilios', widget: const Domicilios()),
         VWidget(path: '/novedades', widget: const Novedades()),
-        VWidget(path: '/pqrs', widget: const Pqrs())
+        VWidget(path: '/pqrs', widget: const Pqrs()),
       ],
     ),
     VGuard(
@@ -67,8 +64,8 @@ List<VRouteElement> buildRoutes() {
       ],
     ),
     VRouteRedirector(
-          redirectTo: '/login',
-          path: r'*',
-        ),
+      redirectTo: '/login',
+      path: r'*',
+    ),
   ];
 }

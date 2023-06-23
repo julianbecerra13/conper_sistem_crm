@@ -1,12 +1,21 @@
+import 'package:conper/views/cajadomi.dart';
+import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../models/domiciliario.dart';
+import '../cajapunto.dart';
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
   Menu({super.key});
 
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -101,6 +110,25 @@ class Menu extends StatelessWidget {
                 ),
                 child: TextButton(
                     onPressed: () async {
+                      _showModalCuadre(context);
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    child: const Text("Cuadre de Caja"))),
+            const SizedBox(height: 5),
+            Container(
+                width: 10,
+                height: 30,
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(color: Colors.blue, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextButton(
+                    onPressed: () async {
                       VRouter.of(context).to('/novedades');
                     },
                     style: TextButton.styleFrom(
@@ -163,7 +191,8 @@ class Menu extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 33, 243, 117),
-                  border: Border.all(color: const Color.fromARGB(255, 33, 243, 117), width: 1),
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 33, 243, 117), width: 1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextButton(
@@ -191,6 +220,7 @@ class Menu extends StatelessWidget {
   }
 
   final TextEditingController fechaController = TextEditingController();
+
   void _showModalArchivoPost(BuildContext context) {
     showDialog(
       context: context,
@@ -335,6 +365,343 @@ class Menu extends StatelessWidget {
                 "Recuerda revisar la ruta donde se almacena los archivos POST"),
           ],
         ));
+      },
+    );
+  }
+
+  void _showModalCuadre(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  _showModalPunto(context);
+                },
+                child: const Text("Caja Punto")),
+            const SizedBox(width: 10),
+            ElevatedButton(
+                onPressed: () {
+                  _showModaldomi(context);
+                },
+                child: const Text("Caja Domicilio")),
+          ],
+        ));
+      },
+    );
+  }
+
+  List<Map<String, dynamic>> domiciliariosList = [];
+  @override
+  void initState() {
+    super.initState();
+    getDomiciliarios();
+  }
+
+  void getDomiciliarios() async {
+    await _getDomiciliarios().then((value) {
+      setState(() {
+        domiciliariosList = value;
+      });
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await http.get(Uri.parse(
+        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+    List<dynamic> domici = [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)["domiciliarios"];
+      if (data == null) {
+        return [];
+      }
+      domici = data
+          .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
+          .toList();
+    } else {
+      throw Exception('Failed to load domiciliarios');
+    }
+
+    List<Map<String, dynamic>> domiciliariosMap = [];
+
+    for (var domiciliario in domici) {
+      domiciliariosMap.add(domiciliario.toJson());
+    }
+    return domiciliariosMap;
+  }
+
+  void _showModaldomi(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Domiciliario para Cuadre de Caja",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width - 800,
+                        height: MediaQuery.of(context).size.height - 300,
+                        child: Card(
+                          elevation: 8,
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(20),
+                            child: Tabla(
+                              data: domiciliariosList,
+                              headers: const [
+                                {"Titulo": "Nombre", "key": "nombre"},
+                                {
+                                  "Titulo": "ID Domiciliario",
+                                  "key": "idDomiciliario"
+                                }
+                              ],
+
+                              // ignore: non_constant_identifier_names
+                              onButtonPressed: (Domicilio) async {
+                                _showModalDomiciliario(context, Domicilio);
+                              },
+                              child: const Text("Cuadre de Caja"),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          );
+        });
+  }
+
+  void _showModalDomiciliario(BuildContext context, domicilio) {
+    TextEditingController inicioController = TextEditingController();
+    TextEditingController finController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Caja Domicilio",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // ignore: avoid_unnecessary_containers
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // ignore: sized_box_for_whitespace
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 1000,
+                              child: TextField(
+                                controller: inicioController,
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  hintText: 'Fecha Inicio aaaa-mm-dd',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 1000,
+                              child: TextField(
+                                controller: finController,
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  hintText: 'Fecha Fin aaaa-mm-dd',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              String inicio = inicioController.text;
+                              String fin = finController.text;
+
+                              _showModall(context, domicilio, inicio, fin);
+                            },
+                            child: const Text('Capture'),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void _showModall(BuildContext context, domicilio, inicio, fin) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Cajacuadre(
+            domicilio: domicilio,
+            inicio: inicio,
+            fin: fin,
+          ),
+        );
+      },
+    );
+  }
+
+  void _showModall2(BuildContext context, inicio, fin) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Cajapunto(
+            inicio: inicio,
+            fin: fin,
+          ),
+        );
+      },
+    );
+  }
+
+  void _showModalPunto(BuildContext context) {
+    TextEditingController inicioController = TextEditingController();
+    TextEditingController finController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Caja Punto",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // ignore: avoid_unnecessary_containers
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // ignore: sized_box_for_whitespace
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 1000,
+                              child: TextField(
+                                controller: inicioController,
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  hintText: 'Fecha Inicio aaaa-mm-dd',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 1000,
+                              child: TextField(
+                                controller: finController,
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  hintText: 'Fecha Fin aaaa-mm-dd',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              String inicio = inicioController.text;
+                              String fin = finController.text;
+                              _showModall2(context, inicio, fin);
+                            },
+                            child: const Text('Capture'),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
       },
     );
   }

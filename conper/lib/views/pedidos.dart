@@ -228,6 +228,7 @@ class _PedidosState extends State<Pedidos> {
                                     ],
                                     onButtonPressed: (info) {
                                       _showModal(context, info);
+                                    
                                     },
                                     // ignore: sort_child_properties_last
                                     child: const Icon(

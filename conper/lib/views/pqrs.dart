@@ -152,10 +152,8 @@ class _pqrsState extends State<Pqrs> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          
                           Padding(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(10),
                             child: SizedBox(
                               height: MediaQuery.of(context).size.height - 300,
                               child: Card(

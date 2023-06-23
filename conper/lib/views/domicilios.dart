@@ -218,36 +218,7 @@ class _DomiciliosState extends State<Domicilios> {
                                         ],
                                         // ignore: non_constant_identifier_names
                                         onButtonPressed: (info) async {
-                                          final prefs = await SharedPreferences
-                                              .getInstance();
-                                          await http
-                                              .put(
-                                                  Uri.parse(
-                                                      'http://localhost:8080/actualizarT'),
-                                                  body: json.encode({
-                                                    "idPunto":
-                                                        prefs.getInt("IDPunto"),
-                                                    "idPedido":
-                                                        info["idGeneral"],
-                                                    "idTraza": 6,
-                                                  }))
-                                              .then((response) {
-                                            if (response.statusCode == 200) {
-                                              setState(() {
-                                                ordersTraza.removeWhere(
-                                                    (element) =>
-                                                        element["idGeneral"] ==
-                                                        info["idGeneral"]);
-                                              });
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Se ha actualizado el estado del pedido'),
-                                                ),
-                                              );
-                                            }
-                                          });
+                                         _showModal(context, info);
                                         },
                                         onOptionalButtonPressed: (inf) {
                                           _showModalDetalles(context, inf);
@@ -287,5 +258,79 @@ class _DomiciliosState extends State<Domicilios> {
         ));
       },
     );
+  }
+
+  void _showModal(BuildContext context, info) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Row(children: [
+          Expanded(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                const Text(
+                  "Pedido Finalizado como: ",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () {
+                      int variable = 5;
+                      Actualizar(variable, info);
+                    },
+                    child: const Text("ENTREGADO")),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () {
+                      int variable = 7;
+                      Actualizar(variable, info);
+                    },
+                    child: const Text("NO ENTREGADO")),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () {
+                      int variable = 11;
+                      Actualizar(variable, info);
+                    },
+                    child: const Text("POR CANCELAR")),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () {
+                      int variable = 13;
+                      Actualizar(variable, info);
+                    },
+                    child: const Text("DEVOLUCION")),
+              ])),
+        ]));
+      },
+    );
+  }
+
+  Actualizar(int variable, info) async {
+    final prefs = await SharedPreferences.getInstance();
+    await http
+        .put(Uri.parse('http://localhost:8080/actualizarT'),
+            body: json.encode({
+              "idPunto": prefs.getInt("IDPunto"),
+              "idPedido": info["idGeneral"],
+              "idincidente": variable,
+              "idTraza": 6,
+            }))
+        .then((response) {
+      if (response.statusCode == 200) {
+        setState(() {
+          ordersTraza.removeWhere(
+              (element) => element["idGeneral"] == info["idGeneral"]);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Se ha actualizado el estado del pedido'),
+          ),
+        );
+      }
+    });
   }
 }
