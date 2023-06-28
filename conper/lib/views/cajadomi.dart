@@ -10,13 +10,11 @@ import 'package:vrouter/vrouter.dart';
 class Cajacuadre extends StatefulWidget {
   final dynamic inicio;
   final dynamic fin;
-  final dynamic domicilio;
 
   const Cajacuadre({
     Key? key,
     required this.inicio,
     required this.fin,
-    required this.domicilio,
   }) : super(key: key);
 
   @override
@@ -40,7 +38,7 @@ class _CajacuadreState extends State<Cajacuadre> {
   }
 
   void getcajas() async {
-    await _getcajas(widget.domicilio, widget.inicio, widget.fin).then((value) {
+    await _getcajas(widget.inicio, widget.fin).then((value) {
       setState(() {
         cajaList = value;
       });
@@ -48,10 +46,11 @@ class _CajacuadreState extends State<Cajacuadre> {
   }
 
   Future<List<Map<String, dynamic>>> _getcajas(
-      dynamic domicilio, dynamic inicio, dynamic fin) async {
+      dynamic inicio, dynamic fin) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/cuadrecajadomi?idDomiciliario=${domicilio["idDomiciliario"]}&idPunto=${prefs.getInt("IDPunto")}&fechaInicio=$inicio&fechaFin=$fin'));
+        'http://localhost:8080/cuadrecajadomi?&idPunto=${prefs.getInt("IDPunto")}&fechaInicio=$inicio&fechaFin=$fin'));
+        
     List<dynamic> caja = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["cuadreCaja"];

@@ -1,5 +1,4 @@
 import 'package:conper/views/cajadomi.dart';
-import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
@@ -386,7 +385,7 @@ class _MenuState extends State<Menu> {
             const SizedBox(width: 10),
             ElevatedButton(
                 onPressed: () {
-                  _showModaldomi(context);
+                  _showModalDomiciliario(context);
                 },
                 child: const Text("Caja Domicilio")),
           ],
@@ -435,64 +434,7 @@ class _MenuState extends State<Menu> {
     return domiciliariosMap;
   }
 
-  void _showModaldomi(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-              return SizedBox(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Domiciliario para Cuadre de Caja",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width - 800,
-                        height: MediaQuery.of(context).size.height - 300,
-                        child: Card(
-                          elevation: 8,
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.all(20),
-                            child: Tabla(
-                              data: domiciliariosList,
-                              headers: const [
-                                {"Titulo": "Nombre", "key": "nombre"},
-                                {
-                                  "Titulo": "ID Domiciliario",
-                                  "key": "idDomiciliario"
-                                }
-                              ],
-
-                              // ignore: non_constant_identifier_names
-                              onButtonPressed: (Domicilio) async {
-                                _showModalDomiciliario(context, Domicilio);
-                              },
-                              child: const Text("Cuadre de Caja"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          );
-        });
-  }
-
-  void _showModalDomiciliario(BuildContext context, domicilio) {
+  void _showModalDomiciliario(BuildContext context) {
     TextEditingController inicioController = TextEditingController();
     TextEditingController finController = TextEditingController();
 
@@ -568,7 +510,7 @@ class _MenuState extends State<Menu> {
                               String inicio = inicioController.text;
                               String fin = finController.text;
 
-                              _showModall(context, domicilio, inicio, fin);
+                              _showModall(context, inicio, fin);
                             },
                             child: const Text('Capture'),
                           )
@@ -585,13 +527,12 @@ class _MenuState extends State<Menu> {
     );
   }
 
-  void _showModall(BuildContext context, domicilio, inicio, fin) {
+  void _showModall(BuildContext context, inicio, fin) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Cajacuadre(
-            domicilio: domicilio,
             inicio: inicio,
             fin: fin,
           ),
