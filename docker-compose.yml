@@ -11,5 +11,7 @@ services:
     build:
       context: ./conper_go
       dockerfile: Dockerfile
+    env_file:
+      - conper_go/.env
     ports:
       - 8080:8080

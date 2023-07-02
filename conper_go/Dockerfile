@@ -1,5 +1,5 @@
 # Etapa de compilación
-FROM golang:1.16-alpine AS build
+FROM golang:1.20-alpine AS build
 
 WORKDIR /src
 COPY . .
