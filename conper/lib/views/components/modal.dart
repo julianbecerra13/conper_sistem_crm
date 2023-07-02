@@ -11,7 +11,10 @@ class MyModalContent extends StatelessWidget {
   final Map<String, dynamic> informacion;
   final int opcion;
   const MyModalContent(
-      {super.key, required this.domiciliariosList, required this.informacion, required this.opcion});
+      {super.key,
+      required this.domiciliariosList,
+      required this.informacion,
+      required this.opcion});
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +53,24 @@ class MyModalContent extends StatelessWidget {
                           data: domiciliariosList,
                           headers: const [
                             {"Titulo": "Nombre", "key": "nombre"},
-                            {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
+                            {
+                              "Titulo": "ID Domiciliario",
+                              "key": "idDomiciliario"
+                            }
                           ],
-                      
+
                           // ignore: non_constant_identifier_names
                           onButtonPressed: (Domicilio) async {
                             final prefs = await SharedPreferences.getInstance();
                             await http
-                                .put(Uri.parse('http://localhost:8080/actualizar'),
+                                .put(
+                                    Uri.parse('http://backend:8080/actualizar'),
                                     body: json.encode({
                                       "idPunto": prefs.getInt("IDPunto"),
                                       "idPedido": informacion["idGeneral"],
                                       "idTraza": opcion,
-                                      "idDomiciliario": Domicilio["idDomiciliario"]
+                                      "idDomiciliario":
+                                          Domicilio["idDomiciliario"]
                                     }))
                                 .then((response) {
                               if (response.statusCode == 200) {

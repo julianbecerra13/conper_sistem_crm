@@ -48,7 +48,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=6&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=6&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -252,10 +252,9 @@ class _TrasabilidadState extends State<Trasabilidad> {
     );
   }
 
-  
   Future<List<Map<String, dynamic>>> _getDomis(value) async {
     final response = await http.put(
-        Uri.parse('http://localhost:8080/aggdomiciliarios'),
+        Uri.parse('http://backend:8080/aggdomiciliarios'),
         body: json.encode({"cedula": value}));
     List<dynamic> domi = [];
     if (response.statusCode == 200) {
@@ -521,7 +520,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                             await http
                                                 .put(
                                                     Uri.parse(
-                                                        'http://localhost:8080/aggdomiciliariosn2'),
+                                                        'http://backend:8080/aggdomiciliariosn2'),
                                                     body: json.encode({
                                                       "Nivel": "3",
                                                       "cedula":

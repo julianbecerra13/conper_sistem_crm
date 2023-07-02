@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Modaldomis extends StatefulWidget {
-
   const Modaldomis({Key? key}) : super(key: key);
 
   @override
@@ -34,7 +33,7 @@ class _MyModalContentDState extends State<Modaldomis> {
   Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
@@ -96,9 +95,11 @@ class _MyModalContentDState extends State<Modaldomis> {
                               "Titulo": "ID Domiciliario",
                               "key": "idDomiciliario"
                             }
-                          ], onButtonPressed: (info) { 
+                          ],
+                          onButtonPressed: (info) {
                             print(info);
-                          }, child: const Text("Cuadre de Caja"),
+                          },
+                          child: const Text("Cuadre de Caja"),
                         ),
                       ),
                     ),

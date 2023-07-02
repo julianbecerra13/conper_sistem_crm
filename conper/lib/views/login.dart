@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Future<void> login() async {
       // URL de la API de inicio de sesión
-      final url = Uri.parse('http://localhost:8080/login');
+      final url = Uri.parse('http://backend:8080/login');
 
       // Crear el cuerpo de la solicitud con los datos del usuario y contraseña
       final body = jsonEncode({
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
         // Si la respuesta es exitosa, mostrar un diálogo de éxito
         // guardamos los datos de inicio de sesión en el almacenamiento local
         final prefs = await SharedPreferences.getInstance();
-        
+
         final login = Login.fromJson(json.decode(response.body));
         await prefs.setString('nombre', login.nombre);
         await prefs.setInt('IDPunto', login.idPunto);

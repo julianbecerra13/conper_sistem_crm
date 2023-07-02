@@ -149,7 +149,7 @@ class _MenuState extends State<Menu> {
                     onPressed: () async {
                       final prefs = await SharedPreferences.getInstance();
                       await http
-                          .put(Uri.parse('http://localhost:8080/impresora'),
+                          .put(Uri.parse('http://backend:8080/impresora'),
                               body: json
                                   .encode({'idPunto': prefs.getInt('IDPunto')}))
                           .then((response) {
@@ -287,7 +287,7 @@ class _MenuState extends State<Menu> {
                                         await http
                                             .put(
                                                 Uri.parse(
-                                                    'http://localhost:8080/archivopost'),
+                                                    'http://backend:8080/archivopost'),
                                                 body: json.encode({
                                                   "FechaInicio":
                                                       fechaController.text,
@@ -412,7 +412,7 @@ class _MenuState extends State<Menu> {
   Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];

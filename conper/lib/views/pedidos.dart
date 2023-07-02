@@ -55,13 +55,12 @@ class _PedidosState extends State<Pedidos> {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=2&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=2&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
       if (data == null) {
         return [];
-        
       }
       orders = data.map((order) => Ordenes.fromJson(order)).toList();
     } else {
@@ -79,7 +78,7 @@ class _PedidosState extends State<Pedidos> {
   Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
@@ -187,16 +186,14 @@ class _PedidosState extends State<Pedidos> {
                               Text(
                                 "PEDIDOS",
                                 style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold),
+                                    fontSize: 30, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height - 300,
+                              height: MediaQuery.of(context).size.height - 300,
                               child: Card(
                                 elevation: 8,
                                 child: SingleChildScrollView(
@@ -228,7 +225,6 @@ class _PedidosState extends State<Pedidos> {
                                     ],
                                     onButtonPressed: (info) {
                                       _showModal(context, info);
-                                    
                                     },
                                     // ignore: sort_child_properties_last
                                     child: const Icon(

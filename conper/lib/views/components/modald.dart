@@ -17,9 +17,7 @@ class MyModalContentD extends StatefulWidget {
 
 class _MyModalContentDState extends State<MyModalContentD> {
   List<Map<String, dynamic>> detallesList = [];
-  
-  
-  
+
   @override
   void initState() {
     super.initState();
@@ -35,9 +33,8 @@ class _MyModalContentDState extends State<MyModalContentD> {
   }
 
   Future<List<Map<String, dynamic>>> _getDetalles() async {
-    final response = await http.put(
-        Uri.parse('http://localhost:8080/detalles'),
-        body: json.encode({"IdPedido":widget.inf["idGeneral"]}));
+    final response = await http.put(Uri.parse('http://backend:8080/detalles'),
+        body: json.encode({"IdPedido": widget.inf["idGeneral"]}));
     List<dynamic> detalles = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["detalles"];
@@ -92,7 +89,6 @@ class _MyModalContentDState extends State<MyModalContentD> {
                             {
                               "Titulo": '',
                               "key": "ItemNombre",
-                            
                             },
                             {
                               "Titulo": '',

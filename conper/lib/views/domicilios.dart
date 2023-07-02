@@ -46,7 +46,7 @@ class _DomiciliosState extends State<Domicilios> {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=5&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=5&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -218,7 +218,7 @@ class _DomiciliosState extends State<Domicilios> {
                                         ],
                                         // ignore: non_constant_identifier_names
                                         onButtonPressed: (info) async {
-                                         _showModal(context, info);
+                                          _showModal(context, info);
                                         },
                                         onOptionalButtonPressed: (inf) {
                                           _showModalDetalles(context, inf);
@@ -312,7 +312,7 @@ class _DomiciliosState extends State<Domicilios> {
   Actualizar(int variable, info) async {
     final prefs = await SharedPreferences.getInstance();
     await http
-        .put(Uri.parse('http://localhost:8080/actualizarT'),
+        .put(Uri.parse('http://backend:8080/actualizarT'),
             body: json.encode({
               "idPunto": prefs.getInt("IDPunto"),
               "idPedido": info["idGeneral"],
