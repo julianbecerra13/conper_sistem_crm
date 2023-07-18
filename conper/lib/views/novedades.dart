@@ -42,7 +42,7 @@ class _NovedadesState extends State<Novedades> {
   Future<List<Map<String, dynamic>>> _getNovedades() async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/novedades?idUsuario=${prefs.getString("login")}&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/novedades?idUsuario=${prefs.getString("login")}&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> nove = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["novedades"];
@@ -217,8 +217,8 @@ class _NovedadesState extends State<Novedades> {
                                         },
                                         {"Titulo": "novedad", "key": 'Novedad'},
                                         {
-                                          "Titulo" : "Descripcion",
-                                          "key" : 'Descripcion'
+                                          "Titulo": "Descripcion",
+                                          "key": 'Descripcion'
                                         },
                                         {
                                           "Titulo": "fecha creación",
@@ -229,14 +229,15 @@ class _NovedadesState extends State<Novedades> {
                                         await http
                                             .put(
                                                 Uri.parse(
-                                                    'http://localhost:8080/aggnovedad1'),
+                                                    'http://backend:8080/aggnovedad1'),
                                                 body: json.encode({
                                                   "level": 2,
                                                   "IdPunto": 0,
                                                   "IdNovedad": 0,
                                                   "Novedad": "",
                                                   "IdCliente": 1,
-                                                  "Idcp": informacion["ConcecutivoNovedad"],
+                                                  "Idcp": informacion[
+                                                      "ConcecutivoNovedad"],
                                                   "Activo": 0
                                                 }))
                                             .then((value) {
@@ -248,7 +249,6 @@ class _NovedadesState extends State<Novedades> {
                                                 content: Text(
                                                     'Se ha Desactivado Correctamente la Novedad'),
                                               ),
-                                              
                                             );
                                           } else {
                                             ScaffoldMessenger.of(context)
@@ -309,7 +309,7 @@ class _NovedadesState extends State<Novedades> {
                       onSubmitted: (value) async {
                         final prefs = await SharedPreferences.getInstance();
                         await http
-                            .put(Uri.parse('http://localhost:8080/aggnovedad1'),
+                            .put(Uri.parse('http://backend:8080/aggnovedad1'),
                                 body: json.encode({
                                   "level": 1,
                                   "IdPunto": prefs.getInt("IDPunto"),

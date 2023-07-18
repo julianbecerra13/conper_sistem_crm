@@ -42,12 +42,11 @@ class _PedidosState extends State<PedidosEstancados> {
     });
   }
 
-
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=1&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=1&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
@@ -66,8 +65,6 @@ class _PedidosState extends State<PedidosEstancados> {
     }
     return orderMap;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +203,7 @@ class _PedidosState extends State<PedidosEstancados> {
                                           await http
                                               .put(
                                                   Uri.parse(
-                                                      'http://localhost:8080/actualizarT'),
+                                                      'http://backend:8080/actualizarT'),
                                                   body: json.encode({
                                                     "idPunto":
                                                         prefs.getInt("IDPunto"),
@@ -261,6 +258,7 @@ class _PedidosState extends State<PedidosEstancados> {
       ),
     );
   }
+
   void _showModalDetalles(BuildContext context, inf) {
     showDialog(
       context: context,

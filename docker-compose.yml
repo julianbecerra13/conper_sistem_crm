@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./conper
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+
+  backend:
+    build:
+      context: ./conper_go
+      dockerfile: Dockerfile
+    env_file:
+      - conper_go/.env
+    ports:
+      - 8080:8080

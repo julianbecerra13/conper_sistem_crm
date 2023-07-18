@@ -42,7 +42,7 @@ class _pqrsState extends State<Pqrs> {
   Future<List<Map<String, dynamic>>> _getPqrs() async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/pqrs?idNivel=1&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://backend:8080/pqrs?idNivel=1&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> pq = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["Pqrs"];
@@ -169,16 +169,13 @@ class _pqrsState extends State<Pqrs> {
                                         },
                                         {
                                           "Titulo": "Fecha del Caso",
-                                         "key": 'FechaCaso'
+                                          "key": 'FechaCaso'
                                         },
                                         {
                                           "Titulo": "Responsable Encargado",
                                           "key": 'ResponsableEncargado'
                                         },
-                                        {
-                                          "Titulo": "Tipo",
-                                           "key": 'Tipo'
-                                        },
+                                        {"Titulo": "Tipo", "key": 'Tipo'},
                                         {
                                           "Titulo": "Requerimiento Cliente",
                                           "key": 'RequerimientoCliente'
@@ -213,7 +210,7 @@ class _pqrsState extends State<Pqrs> {
     ));
   }
 
-  final TextEditingController respuestaController= TextEditingController();
+  final TextEditingController respuestaController = TextEditingController();
   void _showModalRespuesta(BuildContext context, info) {
     showDialog(
       context: context,
@@ -243,7 +240,7 @@ class _pqrsState extends State<Pqrs> {
                       onSubmitted: (value) async {
                         final prefs = await SharedPreferences.getInstance();
                         await http
-                            .put(Uri.parse('http://localhost:8080/respuestaPqrs'),
+                            .put(Uri.parse('http://backend:8080/respuestaPqrs'),
                                 body: json.encode({
                                   "IdPqrs": info["IDcaso"],
                                   "respuesta": respuestaController.text,
