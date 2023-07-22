@@ -272,6 +272,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
         Uri.parse('http://localhost:8080/aggdomiciliarios'),
         body: json.encode({"cedula": value}));
     List<dynamic> domi = [];
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
       if (data == null) {
@@ -383,7 +384,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
                                   await http
                                       .put(
                                           Uri.parse(
-                                              'http://0.0.0.0:8080/aggdomiciliariosn2'),
+                                              'http://localhost:8080/aggdomiciliariosn2'),
                                           body: json.encode({
                                             "Nivel": "2",
                                             "cedula":

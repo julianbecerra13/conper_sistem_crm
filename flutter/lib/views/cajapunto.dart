@@ -110,10 +110,11 @@ class _cajapuntoState extends State<Cajapunto> {
                         child: TablaD(
                           data: cajaList2,
                           headers: const [
-                            {"Titulo": 'Numero de Punto', "key": "IDPunto"},
+
                             {"Titulo": 'Nombre', "key": "NombrePunto"},
+                            {"Titulo": 'Tipo de Pago', "key": "NombreTipoPago"},
                             {"Titulo": 'Total Ordenes', "key": "TotalOrdenes"},
-                            {"Titulo": 'Totalde ventas', "key": "TotalVenta"}
+                            {"Titulo": 'Total de ventas', "key": "TotalVenta"}
                           ],
                         ),
                       ),

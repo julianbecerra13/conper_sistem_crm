@@ -196,14 +196,14 @@ class _PedidosState extends State<PedidosEstancados> {
                                 ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(2),
                                 child: SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height - 300,
+                                      MediaQuery.of(context).size.height - 250,
                                   child: Card(
                                     elevation: 8,
                                     child: SingleChildScrollView(
-                                      padding: const EdgeInsets.all(20),
+                                      padding: const EdgeInsets.all(5),
                                       child: Tabla(
                                         data: ordersTraza,
                                         headers: const [
@@ -230,6 +230,18 @@ class _PedidosState extends State<PedidosEstancados> {
                                           {
                                             "Titulo": 'Estado',
                                             "key": "NombreTraza"
+                                          },
+                                          {
+                                            "Titulo": 'Punto de venta',
+                                            "key": "PuntodeVenta"
+                                          },
+                                          {
+                                            "Titulo": 'Observaciones',
+                                            "key": "Observaciones"
+                                          },
+                                          {
+                                            "Titulo": 'Telefono',
+                                            "key": "Telefono"
                                           },
                                         ],
                                         // ignore: non_constant_identifier_names

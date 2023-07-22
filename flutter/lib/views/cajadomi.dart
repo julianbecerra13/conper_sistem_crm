@@ -46,11 +46,13 @@ class _CajacuadreState extends State<Cajacuadre> {
   }
 
   Future<List<Map<String, dynamic>>> _getcajas(
-      dynamic inicio, dynamic fin) async {
+    dynamic inicio,
+    dynamic fin,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
         'http://localhost:8080/cuadrecajadomi?&idPunto=${prefs.getInt("IDPunto")}&fechaInicio=$inicio&fechaFin=$fin'));
-        
+
     List<dynamic> caja = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["cuadreCaja"];
@@ -112,15 +114,16 @@ class _CajacuadreState extends State<Cajacuadre> {
                           headers: const [
                             {
                               "Titulo": 'Nombre Domiciliario',
-                              "key": "NombreMovil"
+                              "key": "nombreMovil"
                             },
-                            {"Titulo": 'Punto', "key": "NombrePunto"},
-                            {"Titulo": 'Tipo de Pago', "key": "NombreTipoPago"},
+                            {"Titulo": 'Punto', "key": "nombrePunto"},
+                            {"Titulo": 'Tipo de Pago', "key": "nombreTipoPago"},
+                            {"Titulo": 'Cantidad de Ventas', "key": "totalFP"},
                             {
                               "Titulo": 'Cantidad de Ordenes',
-                              "key": "TotalOrdenes"
+                              "key": "totalOrdenes"
                             },
-                            {"Titulo": 'Total', "key": "TotalVenta"},
+                            {"Titulo": 'Total', "key": "valorFP"},
                           ],
                         ),
                       ),

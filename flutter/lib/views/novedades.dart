@@ -42,7 +42,7 @@ class _NovedadesState extends State<Novedades> {
   Future<List<Map<String, dynamic>>> _getNovedades() async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/novedades?idUsuario=${prefs.getString("login")}&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://localhost:8080/novedades?idUsuario=0&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> nove = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["novedades"];
