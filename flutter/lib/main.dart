@@ -1,3 +1,4 @@
+import 'package:conper/views/domiciliopriv.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
@@ -16,7 +17,9 @@ void main() {
 Future<bool> hasToken() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int? token = prefs.getInt('IDPunto');
-  return token != null;
+  String? nivelAcceso = prefs.getString('login');
+  
+  return token != null && nivelAcceso != null;
 }
 
 class MyApp extends StatelessWidget {
@@ -50,6 +53,8 @@ List<VRouteElement> buildRoutes() {
         VWidget(path: '/domicilios', widget: const Domicilios()),
         VWidget(path: '/novedades', widget: const Novedades()),
         VWidget(path: '/pqrs', widget: const Pqrs()),
+        VWidget(path: '/domiciliario', widget: const DomiciliosPriv()),
+        
       ],
     ),
     VGuard(

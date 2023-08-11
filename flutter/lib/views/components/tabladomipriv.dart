@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class Tabla extends StatelessWidget {
+class TablaDomiPriv extends StatelessWidget {
   final List<Map<String, dynamic>> data;
   final List<Map<String, dynamic>> headers;
   final Function(Map<String, dynamic>) onButtonPressed;
@@ -9,7 +9,7 @@ class Tabla extends StatelessWidget {
   final Widget child;
   final bool showOptionalButton;
 
-  const Tabla({
+  const TablaDomiPriv({
     Key? key,
     required this.data,
     required this.headers,
@@ -40,8 +40,8 @@ class Tabla extends StatelessWidget {
             ),
             const TableCell(
               child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("Acciones",
+                padding: EdgeInsets.all(2.0),
+                child: Text("finalizar",
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white)),
               ),
@@ -49,8 +49,8 @@ class Tabla extends StatelessWidget {
             if (showOptionalButton && onOptionalButtonPressed != null)
               const TableCell(
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("Detalles",
+                  padding: EdgeInsets.all(6.0),
+                  child: Text("Detalle",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
@@ -60,13 +60,6 @@ class Tabla extends StatelessWidget {
         ...data.map(
           (rowData) => TableRow(
             decoration: BoxDecoration(
-              color: rowData["NombreTraza"] == "Preparando"
-                  ? const Color.fromARGB(255, 185, 255, 188)
-                  : rowData["NombreTraza"] == "En Movil"
-                      ? const Color.fromARGB(255, 229, 184, 255)
-                      : rowData["NombreTraza"] == "Recepción"
-                          ? const Color.fromARGB(255, 255, 185, 185)
-                          : const Color.fromARGB(255, 185, 223, 255),
               borderRadius: BorderRadius.circular(10),
             ),
             children: [
@@ -74,7 +67,7 @@ class Tabla extends StatelessWidget {
               ...headers.map(
                 (cellData) => TableCell(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(7.0),
                     child: Text(rowData[cellData["key"]].toString()),
                   ),
                 ),
@@ -95,7 +88,7 @@ class Tabla extends StatelessWidget {
                   widthFactor: 1.5,
                   child: ElevatedButton(
                     onPressed: () => onOptionalButtonPressed!(rowData),
-                    child: const Text("Detalles"),
+                    child: const Icon(Icons.remove_red_eye),
                   ),
                 ))
             ],

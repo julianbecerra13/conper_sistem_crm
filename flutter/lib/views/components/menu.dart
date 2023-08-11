@@ -57,6 +57,20 @@ class _MenuState extends State<Menu> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
+            ),Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(158, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                title: const Text('d9omi',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                leading: const Icon(Icons.dangerous, color: Colors.red),
+                onTap: () {
+                  VRouter.of(context).to('/domiciliario');
+                },
+              ),
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

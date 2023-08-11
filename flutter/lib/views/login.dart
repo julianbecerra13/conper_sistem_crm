@@ -54,6 +54,10 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('login', login.login);
 
         VRouter.of(context).to('/trasabilidad');
+      // ignore: unrelated_type_equality_checks
+      if (login.login == 6 ) {
+        VRouter.of(context).to('/domiciliario');
+      }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -62,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
             action: SnackBarAction(
               label: 'Aceptar',
               onPressed: () {},
-            ),
+            ), 
           ),
         );
       } else {
