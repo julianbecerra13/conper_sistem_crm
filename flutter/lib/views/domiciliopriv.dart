@@ -44,7 +44,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/PedidosDomi?&idDomiciliario=8138&idPunto=${prefs.getInt("IDPunto")}'));
+        'http://localhost:8080/PedidosDomi?&idDomiciliario=${prefs.getInt("IDUsuario")}&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["pedidos"];
@@ -125,8 +125,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
                           child: Column(
                             children: [
                               const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     "DOMICILIOS",
@@ -148,10 +147,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
                                           "Titulo": 'ID Pedido',
                                           "key": "idGeneral"
                                         },
-                                        {
-                                          "Titulo": 'Nombre',
-                                          "key": "Nombre"
-                                        },
+                                        {"Titulo": 'Nombre', "key": "Nombre"},
                                         {
                                           "Titulo": 'Telefono',
                                           "key": "Telefono"
@@ -229,6 +225,15 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red)),
+                    onPressed: () {
+                      modaltransferir(context, info);
+                    },
+                    child: const Text("TRANSFERIR A OTRO DOMICILIARIO")),
+                const SizedBox(height: 20),
+                ElevatedButton(
                     onPressed: () {
                       int variable = 5;
                       Actualizar(variable, info);
@@ -284,5 +289,50 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
         );
       }
     });
+  }
+
+  final TextEditingController _controller = TextEditingController();
+  void modaltransferir(context, info) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Text("Transferir a:"),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'ID Domiciliario',
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+              onPressed: () async {
+                await http
+                    .put(Uri.parse('http://localhost:8080/transferir'),
+                        body: json.encode({
+                          "idDomiciiario": _controller.text,
+                          "idPedido": info["idGeneral"],
+                        }))
+                    .then((response) {
+                  if (response.statusCode == 200) {
+                    setState(() {
+                      ordersTraza.removeWhere((element) =>
+                          element["idGeneral"] == info["idGeneral"]);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Se ha transferido el pedido'),
+                      ),
+                    );
+                  }
+                });
+              },
+              child: const Text("TRANSFERIR")),
+        ]));
+      },
+    );
   }
 }

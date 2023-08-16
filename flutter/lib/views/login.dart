@@ -41,23 +41,25 @@ class _LoginPageState extends State<LoginPage> {
         headers: {'Content-Type': 'application/json'},
         body: body,
       );
-
+      print(response.body);
       // Verificar la respuesta del servi1010197022dor
       if (response.statusCode == 200) {
         // Si la respuesta es exitosa, mostrar un diálogo de éxito
         // guardamos los datos de inicio de sesión en el almacenamiento local
         final prefs = await SharedPreferences.getInstance();
-        
+
         final login = Login.fromJson(json.decode(response.body));
         await prefs.setString('nombre', login.nombre);
         await prefs.setInt('IDPunto', login.idPunto);
         await prefs.setString('login', login.login);
+        await prefs.setInt('IDUsuario', login.idUsuario);
+        // ignore: unrelated_type_equality_checks
+        if (login.login == "6") {
+          VRouter.of(context).to('/domiciliario');
+        } else {
+          VRouter.of(context).to('/trasabilidad');
+        }
 
-        VRouter.of(context).to('/trasabilidad');
-      // ignore: unrelated_type_equality_checks
-      if (login.login == 6 ) {
-        VRouter.of(context).to('/domiciliario');
-      }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -66,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
             action: SnackBarAction(
               label: 'Aceptar',
               onPressed: () {},
-            ), 
+            ),
           ),
         );
       } else {
