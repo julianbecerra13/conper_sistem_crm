@@ -1,11 +1,16 @@
+import 'dart:async';
+import 'dart:html';
+import 'package:flutter/material.dart';
 import 'package:conper/models/dimiciliopriv.dart';
 import 'package:conper/views/components/modald.dart';
 import 'package:conper/views/components/tabladomipriv.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
+import '../models/domiciliario.dart';
+import 'components/tabla.dart';
 
 class DomiciliosPriv extends StatefulWidget {
   const DomiciliosPriv({super.key});
@@ -15,7 +20,10 @@ class DomiciliosPriv extends StatefulWidget {
 }
 
 class _DomiciliosPrivState extends State<DomiciliosPriv> {
-  List<Map<String, dynamic>> ordersTraza = [];
+  List<Map<String, dynamic>> domiciliariosList = [];
+  List<Map<String, dynamic>> updatedOrdersTraza = [];
+  bool hasNewOrder = false;
+  Timer? timer;
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -29,12 +37,55 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
   void initState() {
     super.initState();
     getOrders();
+    getDomiciliarios();
+    startTimer();
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      checkForNewOrder();
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void showToast() {
+    Fluttertoast.showToast(
+      msg: '¡Tienes un nuevo pedido!',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black87,
+      textColor: Colors.white,
+    );
+  }
+
+  void checkForNewOrder() async {
+    final updatedOrders = await _getOrders();
+    if (updatedOrders.length > updatedOrdersTraza.length) {
+      setState(() {
+        updatedOrdersTraza = updatedOrders;
+        hasNewOrder = true;
+      });
+      showToast();
+    }
   }
 
   void getOrders() async {
     await _getOrders().then((value) {
       setState(() {
-        ordersTraza = value;
+        updatedOrdersTraza = value;
+      });
+    });
+  }
+
+  void getDomiciliarios() async {
+    await _getDomiciliarios().then((value) {
+      setState(() {
+        domiciliariosList = value;
       });
     });
   }
@@ -62,6 +113,31 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
       orderMap.add(order.toJson());
     }
     return orderMap;
+  }
+
+  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await http.get(Uri.parse(
+        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+    List<dynamic> domici = [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)["domiciliarios"];
+      if (data == null) {
+        return [];
+      }
+      domici = data
+          .map((domiciliario) => Domiciliarios.fromJson(domiciliario))
+          .toList();
+    } else {
+      throw Exception('Failed to load domiciliarios');
+    }
+
+    List<Map<String, dynamic>> domiciliariosMap = [];
+
+    for (var domiciliario in domici) {
+      domiciliariosMap.add(domiciliario.toJson());
+    }
+    return domiciliariosMap;
   }
 
   @override
@@ -141,7 +217,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
                                 child: Card(
                                   child: SingleChildScrollView(
                                     child: TablaDomiPriv(
-                                      data: ordersTraza,
+                                      data: updatedOrdersTraza,
                                       headers: const [
                                         {
                                           "Titulo": 'ID Pedido',
@@ -279,7 +355,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
         .then((response) {
       if (response.statusCode == 200) {
         setState(() {
-          ordersTraza.removeWhere(
+          updatedOrdersTraza.removeWhere(
               (element) => element["idGeneral"] == info["idGeneral"]);
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -291,7 +367,6 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
     });
   }
 
-  final TextEditingController _controller = TextEditingController();
   void modaltransferir(context, info) {
     showDialog(
       context: context,
@@ -300,37 +375,58 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
             content: Column(mainAxisSize: MainAxisSize.min, children: [
           const Text("Transferir a:"),
           const SizedBox(height: 20),
-          TextField(
-            controller: _controller,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'ID Domiciliario',
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - 300,
+              child: Card(
+                elevation: 8,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(10),
+                  child: Tabla(
+                    data: domiciliariosList,
+                    headers: const [
+                      {"Titulo": "Nane", "key": "nombre"},
+                      {"Titulo": "ID", "key": "idDomiciliario"}
+                    ],
+                    onButtonPressed: (Domicilio) async {
+                      await http
+                          .put(Uri.parse('http://localhost:8080/transferir'),
+                              body: json.encode({
+                                "idPedido": info["idGeneral"],
+                                "idDomiciliario": Domicilio["idDomiciliario"],
+                              }))
+                          .then((response) {
+                        print(response.body);
+                        if (response.statusCode == 200) {
+                          VRouter.of(context).to('/domicilios');
+                          setState(() {
+                            updatedOrdersTraza.removeWhere((element) =>
+                                element["idGeneral"] == info["idGeneral"]);
+                          });
+                          ScaffoldMessenger.of(context)
+                              .hideCurrentSnackBar(); // Cerrar el SnackBar actual
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Se ha asignado el pedido"),
+                            ),
+                          );
+                        
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("No se ha asignado el pedido"),
+                            ),
+                          );
+                        }
+                      });
+                    },
+                    child: const Text("Transferir"),
+                  ),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-              onPressed: () async {
-                await http
-                    .put(Uri.parse('http://localhost:8080/transferir'),
-                        body: json.encode({
-                          "idDomiciiario": _controller.text,
-                          "idPedido": info["idGeneral"],
-                        }))
-                    .then((response) {
-                  if (response.statusCode == 200) {
-                    setState(() {
-                      ordersTraza.removeWhere((element) =>
-                          element["idGeneral"] == info["idGeneral"]);
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Se ha transferido el pedido'),
-                      ),
-                    );
-                  }
-                });
-              },
-              child: const Text("TRANSFERIR")),
         ]));
       },
     );

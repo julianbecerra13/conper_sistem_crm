@@ -292,6 +292,15 @@ class _DomiciliosState extends State<Domicilios> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red)),
+                    onPressed: () {
+                      modaltransferir(context, info);
+                    },
+                    child: const Text("TRANSFERIR A OTRO DOMICILIARIO")),
+                const SizedBox(height: 20),
+                ElevatedButton(
                     onPressed: () {
                       int variable = 5;
                       Actualizar(variable, info);
@@ -347,5 +356,70 @@ class _DomiciliosState extends State<Domicilios> {
         );
       }
     });
+  }
+
+  void modaltransferir(context, info) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Text("Transferir a:"),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - 300,
+              child: Card(
+                elevation: 8,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(10),
+                  child: Tabla(
+                    data: domiciliariosList,
+                    headers: const [
+                      {"Titulo": "Nane", "key": "nombre"},
+                      {"Titulo": "ID", "key": "idDomiciliario"}
+                    ],
+                    onButtonPressed: (Domicilio) async {
+                      await http
+                          .put(Uri.parse('http://localhost:8080/transferir'),
+                              body: json.encode({
+                                "idPedido": info["idGeneral"],
+                                "idDomiciliario": Domicilio["idDomiciliario"],
+                              }))
+                          .then((response) {
+                        print(response.body);
+                        if (response.statusCode == 200) {
+                          VRouter.of(context).to('/Domicilio');
+                          setState(() {
+                            ordersTraza.removeWhere((element) =>
+                                element["idGeneral"] == info["idGeneral"]);
+                          });
+                          ScaffoldMessenger.of(context)
+                              .hideCurrentSnackBar(); // Cerrar el SnackBar actual
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Se ha asignado el pedido"),
+                            ),
+                          );
+                        
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("No se ha asignado el pedido"),
+                            ),
+                          );
+                        }
+                      });
+                    },
+                    child: const Text("Transferir"),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ]));
+      },
+    );
   }
 }
