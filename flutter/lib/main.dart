@@ -1,4 +1,10 @@
 import 'package:conper/views/domiciliopriv.dart';
+import 'package:conper/views/domicilios.dart';
+import 'package:conper/views/novedades.dart';
+import 'package:conper/views/p_estancados.dart';
+import 'package:conper/views/pedidos.dart';
+import 'package:conper/views/pqrs.dart';
+import 'package:conper/views/trasabilidad.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
@@ -23,7 +29,7 @@ class MyApp extends StatelessWidget {
       mode: VRouterMode.history,
       title: 'Conper',
       debugShowCheckedModeBanner: false,
-      initialUrl: '/domiciliario', // Cambiado a /domiciliario
+      initialUrl: '/login',
       routes: buildRoutes(),
     );
   }
@@ -36,16 +42,26 @@ List<VRouteElement> buildRoutes() {
         bool tokenExists = await hasToken();
         if (!tokenExists) {
           vRedirector.to('/login');
-        } else {
-          final prefs = await SharedPreferences.getInstance();
-          final login = prefs.getString('login');
-          if (login != "6") {
-            vRedirector.to(
-                '/domicilios'); // Redirige a la vista que quieras para usuarios no permitidos
-          }
         }
       },
       stackedRoutes: [
+        VWidget(path: '/pedidos', widget: const Pedidos()),
+        VWidget(path: '/p_estancados', widget: const PedidosEstancados()),
+        VWidget(path: '/domicilios', widget: const Domicilios()),
+        VWidget(path: '/novedades', widget: const Novedades()),
+        VWidget(path: '/pqrs', widget: const Pqrs()),
+        VGuard(
+          beforeEnter: (vRedirector) async {
+            final prefs = await SharedPreferences.getInstance();
+            final loginValue = prefs.getString('login');
+            if (loginValue == "6") {
+              vRedirector.to('/domiciliario');
+            }
+          },
+          stackedRoutes: [
+            VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
+          ],
+        ),
         VWidget(path: '/domiciliario', widget: const DomiciliosPriv()),
       ],
     ),
@@ -53,7 +69,7 @@ List<VRouteElement> buildRoutes() {
       beforeEnter: (vRedirector) async {
         bool tokenExists = await hasToken();
         if (tokenExists) {
-          vRedirector.to('/domiciliario'); // Cambiado a /domiciliario
+          vRedirector.to('/trasabilidad');
         }
       },
       stackedRoutes: [
