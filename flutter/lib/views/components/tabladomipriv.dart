@@ -1,18 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
-class TablaDomiPriv extends StatelessWidget {
-  final List<Map<String, dynamic>> data;
-  final List<Map<String, dynamic>> headers;
+class TarjetaDomiPriv extends StatelessWidget {
+  final Map<String, dynamic> data;
   final Function(Map<String, dynamic>) onButtonPressed;
   final Function(Map<String, dynamic>)? onOptionalButtonPressed;
   final Widget child;
   final bool showOptionalButton;
 
-  const TablaDomiPriv({
+  const TarjetaDomiPriv({
     Key? key,
     required this.data,
-    required this.headers,
     required this.onButtonPressed,
     this.onOptionalButtonPressed,
     required this.child,
@@ -21,80 +19,94 @@ class TablaDomiPriv extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      border: TableBorder.all(borderRadius: BorderRadius.circular(10)),
-      children: [
-        TableRow(
-          decoration: const BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.all(Radius.circular(10))),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ...headers.map(
-              (cellData) => TableCell(
-                child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Text(cellData["Titulo"],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white))),
-              ),
-            ),
-            const TableCell(
-              child: Padding(
-                padding: EdgeInsets.all(2.0),
-                child: Text("finalizar",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-            ),
-            if (showOptionalButton && onOptionalButtonPressed != null)
-              const TableCell(
-                child: Padding(
-                  padding: EdgeInsets.all(6.0),
-                  child: Text("Detalle",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ),
-          ],
-        ),
-        ...data.map(
-          (rowData) => TableRow(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            children: [
-              // for each map
-              ...headers.map(
-                (cellData) => TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: Text(rowData[cellData["key"]].toString()),
+            // Contenido de la tarjeta
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "ID Pedido: ${data["idGeneral"]}\n",
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue),
                   ),
-                ),
+                  const TextSpan(
+                    text: "Nombre: ",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "${data["Nombre"]}\n",
+                  ),
+                  const TextSpan(
+                    text: "Telefono: ",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: "${data["Telefono"]}\n",
+                  ),
+                  const TextSpan(
+                    text: "Direccion: ",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: "Direccion: ${data["Direccion"]}\n",
+                  ),
+                  const TextSpan(
+                    text: "Total Orden: ",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: "${data["TotalOrden"]}\n",
+                  ),
+                  const TextSpan(
+                    text: "Fecha Creacion: ",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: "${data["FechaCrea"]}\n",
+                  ),
+                ],
               ),
-              TableCell(
-                  child: Center(
-                heightFactor: 1.5,
-                widthFactor: 1.5,
-                child: ElevatedButton(
-                  onPressed: () => onButtonPressed(rowData),
+            ),
+            const SizedBox(height: 12), // Espacio entre texto y botones
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => onButtonPressed(data),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
                   child: child,
                 ),
-              )),
-              if (showOptionalButton && onOptionalButtonPressed != null)
-                TableCell(
-                    child: Center(
-                  heightFactor: 1.5,
-                  widthFactor: 1.5,
-                  child: ElevatedButton(
-                    onPressed: () => onOptionalButtonPressed!(rowData),
+                if (showOptionalButton && onOptionalButtonPressed != null)
+                  ElevatedButton(
+                    onPressed: () => onOptionalButtonPressed!(data),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                    ),
                     child: const Icon(Icons.remove_red_eye),
                   ),
-                ))
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

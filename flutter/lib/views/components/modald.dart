@@ -57,11 +57,11 @@ class _MyModalContentDState extends State<MyModalContentD> {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(8.0),
       ),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
           child: SizedBox(
             width: 530,
             height: MediaQuery.of(context).size.height - 200,
@@ -78,13 +78,13 @@ class _MyModalContentDState extends State<MyModalContentD> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(5),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height - 300,
                     child: Card(
                       elevation: 8,
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(5),
                         child: TablaD(
                           data: detallesList,
                           headers: const [

@@ -2,13 +2,7 @@ import 'package:conper/views/domiciliopriv.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
-import 'views/domicilios.dart';
 import 'views/login.dart';
-import 'views/novedades.dart';
-import 'views/p_estancados.dart';
-import 'views/pedidos.dart';
-import 'views/pqrs.dart';
-import 'views/trasabilidad.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +23,7 @@ class MyApp extends StatelessWidget {
       mode: VRouterMode.history,
       title: 'Conper',
       debugShowCheckedModeBanner: false,
-      initialUrl: '/trazabilidad',
+      initialUrl: '/domiciliario', // Cambiado a /domiciliario
       routes: buildRoutes(),
     );
   }
@@ -42,23 +36,24 @@ List<VRouteElement> buildRoutes() {
         bool tokenExists = await hasToken();
         if (!tokenExists) {
           vRedirector.to('/login');
+        } else {
+          final prefs = await SharedPreferences.getInstance();
+          final login = prefs.getString('login');
+          if (login != "6") {
+            vRedirector.to(
+                '/domicilios'); // Redirige a la vista que quieras para usuarios no permitidos
+          }
         }
       },
       stackedRoutes: [
-        VWidget(path: '/trasabilidad', widget: const Trasabilidad()),
-        VWidget(path: '/pedidos', widget: const Pedidos()),
-        VWidget(path: '/p_estancados', widget: const PedidosEstancados()),
-        VWidget(path: '/domicilios', widget: const Domicilios()),
-        VWidget(path: '/novedades', widget: const Novedades()),
-        VWidget(path: '/pqrs', widget: const Pqrs()),
-        VWidget(path: '/domiciliario', widget: const DomiciliosPriv())
+        VWidget(path: '/domiciliario', widget: const DomiciliosPriv()),
       ],
     ),
     VGuard(
       beforeEnter: (vRedirector) async {
         bool tokenExists = await hasToken();
         if (tokenExists) {
-          vRedirector.to('/trasabilidad');
+          vRedirector.to('/domiciliario'); // Cambiado a /domiciliario
         }
       },
       stackedRoutes: [

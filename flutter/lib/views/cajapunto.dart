@@ -50,7 +50,7 @@ class _cajapuntoState extends State<Cajapunto> {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
         'http://localhost:8080/cuadrecajapunto?idUsuario=${prefs.getString("login")}&idPunto=${prefs.getInt("IDPunto")}&fechaInicio=$inicio&fechaFin=$fin'));
-    
+
     List<dynamic> caja = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["cuadreCaja"];
@@ -110,7 +110,6 @@ class _cajapuntoState extends State<Cajapunto> {
                         child: TablaD(
                           data: cajaList2,
                           headers: const [
-
                             {"Titulo": 'Nombre', "key": "NombrePunto"},
                             {"Titulo": 'Tipo de Pago', "key": "NombreTipoPago"},
                             {"Titulo": 'Total Ordenes', "key": "TotalOrdenes"},
@@ -123,7 +122,7 @@ class _cajapuntoState extends State<Cajapunto> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      VRouter.of(context).to('/domiciliario');
                     },
                     child: const Text("Cerrar Modal")),
               ],
