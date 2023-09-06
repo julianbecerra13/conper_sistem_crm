@@ -83,7 +83,7 @@ class _MenuState extends State<MenuAdmin> {
                 leading:
                     const Icon(Icons.arrow_circle_right, color: Colors.blue),
                 onTap: () {
-                  VRouter.of(context).to('/trasabilidad');
+                  VRouter.of(context).to('/administrador');
                 },
               ),
             ),
