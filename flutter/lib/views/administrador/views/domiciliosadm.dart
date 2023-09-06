@@ -114,58 +114,14 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 20),
-                  Wrap(
+                  const Wrap(
                     spacing: 10,
                     alignment: WrapAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "TRASABILIDAD",
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 450,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              // ignore: sized_box_for_whitespace
-                              child: Container(
-                                height: 40,
-                                child: const TextField(
-                                  controller: null,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 5),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    hintText: 'Buscar...',
-                                    prefixIcon: Icon(Icons.search),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ))),
-                              onPressed: () => _logOut(context),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 18.0, vertical: 12.0),
-                                child: Text('Cerrar sesión',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ],
                   ),

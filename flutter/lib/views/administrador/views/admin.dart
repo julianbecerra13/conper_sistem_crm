@@ -97,24 +97,11 @@ class _AdministradorState extends State<Administrador> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(
+                             Flexible(
                               // ignore: sized_box_for_whitespace
                               child: Container(
                                 height: 40,
-                                child: const TextField(
-                                  controller: null,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 5),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    hintText: 'Buscar...',
-                                    prefixIcon: Icon(Icons.search),
-                                  ),
-                                ),
+                              
                               ),
                             ),
                             const SizedBox(width: 10),

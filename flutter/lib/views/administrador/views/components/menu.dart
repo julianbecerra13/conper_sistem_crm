@@ -63,8 +63,36 @@ class _MenuState extends State<MenuAdmin> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: ListTile(
-                title: const Text('Pedidos Estancados',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Añadido para distribuir el espacio
+                  children: [
+                    const Flexible(
+                      // Utilizado para el texto para que se ajuste automáticamente
+                      child: Text(
+                        'Pedidos Estancados', // Texto que aparece primero
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Colors.red, // Fondo rojo del círculo
+                        shape: BoxShape.circle, // Forma del círculo
+                      ),
+                      child: const Center(
+                        child: Text(
+                          '1', // Número 1 que aparece en el círculo
+                          style: TextStyle(
+                            color: Colors.black, // Color del número (negro)
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 leading: const Icon(Icons.dangerous, color: Colors.red),
                 onTap: () {
                   VRouter.of(context).to('/estancadosadmin');
@@ -78,8 +106,36 @@ class _MenuState extends State<MenuAdmin> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: ListTile(
-                title: const Text('Trasabilidad',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Añadido para distribuir el espacio
+                  children: [
+                    const Flexible(
+                      // Utilizado para el texto para que se ajuste automáticamente
+                      child: Text(
+                        'Trasabilidad', // Texto que aparece primero
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Colors.red, // Fondo rojo del círculo
+                        shape: BoxShape.circle, // Forma del círculo
+                      ),
+                      child: const Center(
+                        child: Text(
+                          '1', // Número 1 que aparece en el círculo
+                          style: TextStyle(
+                            color: Colors.black, // Color del número (negro)
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 leading:
                     const Icon(Icons.arrow_circle_right, color: Colors.blue),
                 onTap: () {
@@ -100,10 +156,40 @@ class _MenuState extends State<MenuAdmin> {
                 child: Column(
                   children: [
                     ListTile(
-                      title: const Text('Pedidos'),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment
+                            .spaceBetween, // Añadido para distribuir el espacio
+                        children: [
+                          const Flexible(
+                            // Utilizado para el texto para que se ajuste automáticamente
+                            child: Text(
+                              'Pedidos', // Texto que aparece primero
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              color: Colors.red, // Fondo rojo del círculo
+                              shape: BoxShape.circle, // Forma del círculo
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '1', // Número 1 que aparece en el círculo
+                                style: TextStyle(
+                                  color:
+                                      Colors.black, // Color del número (negro)
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       leading: const Icon(Icons.food_bank),
                       onTap: () {
-                        VRouter.of(context).to('/pedidos');
+                        VRouter.of(context).to('/pedidosadmin');
                       },
                     ),
                     // divider
@@ -114,10 +200,40 @@ class _MenuState extends State<MenuAdmin> {
                       endIndent: 20,
                     ),
                     ListTile(
-                      title: const Text('Domicilios'),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment
+                            .spaceBetween, // Añadido para distribuir el espacio
+                        children: [
+                          const Flexible(
+                            // Utilizado para el texto para que se ajuste automáticamente
+                            child: Text(
+                              'Domicilios', // Texto que aparece primero
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              color: Colors.red, // Fondo rojo del círculo
+                              shape: BoxShape.circle, // Forma del círculo
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '1', // Número 1 que aparece en el círculo
+                                style: TextStyle(
+                                  color:
+                                      Colors.black, // Color del número (negro)
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       leading: const Icon(Icons.delivery_dining),
                       onTap: () {
-                        VRouter.of(context).to('/domicilios');
+                        VRouter.of(context).to('/domiciliosadmin');
                       },
                     ),
                   ],
@@ -136,7 +252,8 @@ class _MenuState extends State<MenuAdmin> {
               ),
               child: TextButton(
                 onPressed: () async {
-                  _showModalCuadre(context);
+                  
+                  _showModalPuntos(context);
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -157,7 +274,8 @@ class _MenuState extends State<MenuAdmin> {
               ),
               child: TextButton(
                 onPressed: () async {
-                  _showModalArchivoPost(context);
+                  
+                  _showModalPuntos(context);
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -394,6 +512,26 @@ class _MenuState extends State<MenuAdmin> {
     );
   }
 
+  void _showModalPuntos(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Funcionando"),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+
+  // ignore: unused_element
   void _showModall(BuildContext context, inicio, fin) {
     showDialog(
       context: context,

@@ -26,6 +26,7 @@ class _PedidosState extends State<PedidosEstancadosadm> {
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    // ignore: use_build_context_synchronously
     VRouter.of(context).to('/');
   }
 
@@ -128,24 +129,11 @@ class _PedidosState extends State<PedidosEstancadosadm> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(
+                             Flexible(
                               // ignore: sized_box_for_whitespace
                               child: Container(
                                 height: 40,
-                                child: const TextField(
-                                  controller: null,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 5),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    hintText: 'Buscar...',
-                                    prefixIcon: Icon(Icons.search),
-                                  ),
-                                ),
+                              
                               ),
                             ),
                             const SizedBox(width: 10),
