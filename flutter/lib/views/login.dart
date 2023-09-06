@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:conper/models/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
         headers: {'Content-Type': 'application/json'},
         body: body,
       );
-      print(response.body);
       // Verificar la respuesta del servi1010197022dor
       if (response.statusCode == 200) {
         // Si la respuesta es exitosa, mostrar un diálogo de éxito

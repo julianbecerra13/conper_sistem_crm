@@ -1,3 +1,4 @@
+import 'package:conper/views/administrador/views/admin.dart';
 import 'package:conper/views/domiciliopriv.dart';
 import 'package:conper/views/domicilios.dart';
 import 'package:conper/views/novedades.dart';
@@ -50,12 +51,16 @@ List<VRouteElement> buildRoutes() {
         VWidget(path: '/domicilios', widget: const Domicilios()),
         VWidget(path: '/novedades', widget: const Novedades()),
         VWidget(path: '/pqrs', widget: const Pqrs()),
+        VWidget(path: '/administrador', widget: const Administrador()),
+
         VGuard(
           beforeEnter: (vRedirector) async {
             final prefs = await SharedPreferences.getInstance();
             final loginValue = prefs.getString('login');
             if (loginValue == "6") {
               vRedirector.to('/domiciliario');
+            } else if (loginValue == "1") {
+              vRedirector.to('/administrador');
             }
           },
           stackedRoutes: [

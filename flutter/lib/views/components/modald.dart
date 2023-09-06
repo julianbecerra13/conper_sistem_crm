@@ -61,26 +61,21 @@ class _MyModalContentDState extends State<MyModalContentD> {
       ),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
           child: SizedBox(
-            width: 530,
+            width: 600,
             height: MediaQuery.of(context).size.height - 200,
             child: Column(
               children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Detalles",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                const Text(
+                  "Detalles",
+                  style:
+                      TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height - 300,
+                    height: MediaQuery.of(context).size.height - 250,
                     child: Card(
                       elevation: 8,
                       child: SingleChildScrollView(

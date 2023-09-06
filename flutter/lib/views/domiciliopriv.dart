@@ -247,9 +247,10 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+            alignment: Alignment.center,
             content: MyModalContentD(
-          inf: inf,
-        ));
+              inf: inf,
+            ));
       },
     );
   }
@@ -337,6 +338,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
             }))
         .then((response) {
       if (response.statusCode == 200) {
+        VRouter.of(context).to('/domiciliario');
         setState(() {
           updatedOrdersTraza.removeWhere(
               (element) => element["idGeneral"] == info["idGeneral"]);
