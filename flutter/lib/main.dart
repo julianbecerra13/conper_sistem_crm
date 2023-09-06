@@ -1,6 +1,7 @@
 import 'package:conper/views/administrador/views/admin.dart';
 import 'package:conper/views/administrador/views/domiciliosadm.dart';
 import 'package:conper/views/administrador/views/p_estancadosadm.dart';
+import 'package:conper/views/administrador/views/pedidosadm.dart';
 import 'package:conper/views/domiciliopriv.dart';
 import 'package:conper/views/domicilios.dart';
 import 'package:conper/views/novedades.dart';
@@ -56,7 +57,8 @@ List<VRouteElement> buildRoutes() {
         VWidget(path: '/administrador', widget: const Administrador()),
         VWidget(path: '/estancadosadmin', widget: const PedidosEstancadosadm()),
         VWidget(path: '/domiciliosadmin', widget: const Domiciliosadm()),
-
+        VWidget(path: '/pedidosadmin', widget: const Pedidosadm()),
+        
 
         VGuard(
           beforeEnter: (vRedirector) async {

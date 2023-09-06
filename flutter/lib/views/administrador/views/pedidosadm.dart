@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:conper/views/administrador/views/components/menu.dart';
-import 'package:conper/views/components/tabla.dart';
+import 'package:conper/views/administrador/views/components/tablaadm.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -13,14 +14,14 @@ import '../../../models/ordenes.dart';
 import '../../components/modal.dart';
 import '../../components/modald.dart';
 
-class Pedidos extends StatefulWidget {
-  const Pedidos({Key? key}) : super(key: key);
+class Pedidosadm extends StatefulWidget {
+  const Pedidosadm({Key? key}) : super(key: key);
 
   @override
-  State<Pedidos> createState() => _PedidosState();
+  State<Pedidosadm> createState() => _PedidosadmState();
 }
 
-class _PedidosState extends State<Pedidos> {
+class _PedidosadmState extends State<Pedidosadm> {
   List<Map<String, dynamic>> domiciliariosList = [];
   List<Map<String, dynamic>> updatedOrdersTraza = [];
   bool hasNewOrder = false;
@@ -158,54 +159,34 @@ class _PedidosState extends State<Pedidos> {
                       const Text(
                         "TRASABILIDAD",
                         style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 30, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: 450,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(
+                             Flexible(
+                              // ignore: sized_box_for_whitespace
                               child: Container(
                                 height: 40,
-                                child: const TextField(
-                                  controller: null,
-                                  decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 5),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    hintText: 'Buscar...',
-                                    prefixIcon: Icon(Icons.search),
-                                  ),
-                                ),
+                              
                               ),
                             ),
                             const SizedBox(width: 10),
                             ElevatedButton(
                               style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                ),
-                              ),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ))),
                               onPressed: () => _logOut(context),
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 18.0,
-                                  vertical: 12.0,
-                                ),
-                                child: Text(
-                                  'Cerrar sesión',
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                                    horizontal: 18.0, vertical: 12.0),
+                                child: Text('Cerrar sesión',
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             ),
                           ],
@@ -248,7 +229,7 @@ class _PedidosState extends State<Pedidos> {
                                   elevation: 8,
                                   child: SingleChildScrollView(
                                     padding: const EdgeInsets.all(5),
-                                    child: Tabla(
+                                    child: Tablaadm(
                                       data: updatedOrdersTraza,
                                       headers: const [
                                         {
