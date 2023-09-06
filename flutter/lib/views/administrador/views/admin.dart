@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:conper/models/domi.dart';
 import 'package:conper/models/ordenes2.dart';
 import 'package:conper/views/administrador/views/components/menu.dart';
+import 'package:conper/views/administrador/views/components/tablaadm.dart';
 import 'package:conper/views/components/modald.dart';
-import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
@@ -184,7 +184,7 @@ class _AdministradorState extends State<Administrador> {
                                     margin: const EdgeInsets.all(10),
                                     child: SingleChildScrollView(
                                       padding: const EdgeInsets.all(5),
-                                      child: Tabla(
+                                      child: Tablaadm(
                                         data: ordersTraza,
                                         headers: const [
                                           {
@@ -354,7 +354,7 @@ class _AdministradorState extends State<Administrador> {
                             elevation: 8,
                             child: SingleChildScrollView(
                               padding: const EdgeInsets.all(20),
-                              child: Tabla(
+                              child: Tablaadm(
                                 data: domis,
                                 headers: const [
                                   {"Titulo": 'Nombre', "key": 'Nombre'},

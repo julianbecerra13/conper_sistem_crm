@@ -21,6 +21,7 @@ class Cajapunto extends StatefulWidget {
   State<Cajapunto> createState() => _cajapuntoState();
 }
 
+// ignore: camel_case_types
 class _cajapuntoState extends State<Cajapunto> {
   List<Map<String, dynamic>> cajaList2 = [];
 

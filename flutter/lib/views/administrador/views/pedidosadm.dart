@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:conper/views/administrador/views/components/menu.dart';
-import 'package:conper/views/components/tabla.dart';
+import 'package:conper/views/administrador/views/components/tablaadm.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -228,7 +229,7 @@ class _PedidosadmState extends State<Pedidosadm> {
                                   elevation: 8,
                                   child: SingleChildScrollView(
                                     padding: const EdgeInsets.all(5),
-                                    child: Tabla(
+                                    child: Tablaadm(
                                       data: updatedOrdersTraza,
                                       headers: const [
                                         {
