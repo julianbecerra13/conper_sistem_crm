@@ -67,7 +67,7 @@ class _MenuState extends State<MenuAdmin> {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 leading: const Icon(Icons.dangerous, color: Colors.red),
                 onTap: () {
-                  VRouter.of(context).to('/p_estancados');
+                  VRouter.of(context).to('/estancadosadmin');
                 },
               ),
             ),
