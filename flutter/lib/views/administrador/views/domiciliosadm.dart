@@ -1,10 +1,10 @@
 import 'package:conper/models/ordenes2.dart';
 import 'package:conper/models/domiciliario.dart';
+import 'package:conper/views/administrador/views/components/menu.dart';
 import 'package:conper/views/components/modald.dart';
 import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:conper/views/components/menu.dart';
 import 'package:vrouter/vrouter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -106,7 +106,7 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
     return Scaffold(
       body: Row(
         children: [
-          Menu(),
+          MenuAdmin(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
