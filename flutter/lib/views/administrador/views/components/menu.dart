@@ -4,9 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:async';
 
 class MenuAdmin extends StatefulWidget {
-  MenuAdmin({Key? key}) : super(key: key);
+  const MenuAdmin({Key? key}) : super(key: key);
 
   @override
   State<MenuAdmin> createState() => _MenuState();
@@ -14,11 +15,164 @@ class MenuAdmin extends StatefulWidget {
 
 class _MenuState extends State<MenuAdmin> {
   String nombrePunto = ''; // Variable para almacenar el nombre del punto
+  int cantidadSinImpuestos = 0;
+  int cantidadTotal = 0;
+  int cantidadEnGestion = 0;
+  int cantidadEnMovil = 0;
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
-    getNombrePunto(); // O
+    getNombrePunto();
+    obtenerCantidadSinImprimir();
+    obtenerCantidadTotal();
+    obtenerCantidadEnGestion();
+    obtenerCantidadEnMovil();
+    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      obtenerCantidadSinImprimir();
+      obtenerCantidadTotal();
+      obtenerCantidadEnGestion();
+      obtenerCantidadEnMovil();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancela el temporizador al liberar el widget
+    super.dispose();
+  }
+
+  void obtenerCantidadSinImprimir() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/cantidadsinimp'),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        // Accede a la lista "numero" y obtén el primer elemento
+        final numeroList = jsonData['numero'] as List<dynamic>;
+
+        if (numeroList.isNotEmpty) {
+          // Obtén el valor "Numero" del primer elemento de la lista
+          final nuevaCantidad = numeroList[0]['Numero'] as int;
+
+          setState(() {
+            cantidadSinImpuestos = nuevaCantidad;
+          });
+        } else {
+          // Manejar el caso en que la lista esté vacía
+          print('La lista "numero" está vacía en el JSON');
+        }
+      } else {
+        // Manejar el caso en que la solicitud no sea exitosa
+        print('Error en la solicitud HTTP');
+      }
+    } catch (e) {
+      // Manejar errores, como problemas de conexión
+      print('Error al obtener la cantidad: $e');
+    }
+  }
+
+  void obtenerCantidadTotal() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/cantidadTotal'),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        // Accede al valor "CantidadTotal" en el JSON
+        final numeroList = jsonData['numero'] as List<dynamic>;
+
+        if (numeroList.isNotEmpty) {
+          // Obtén el valor "Numero" del primer elemento de la lista
+          final nuevaCantidadTotal = numeroList[0]['Numero'] as int;
+
+          setState(() {
+            cantidadTotal = nuevaCantidadTotal;
+          });
+        } else {
+          // Manejar el caso en que la lista esté vacía
+          print('La lista "numero" está vacía en el JSON');
+        }
+      } else {
+        // Manejar el caso en que la solicitud no sea exitosa
+        print('Error en la solicitud HTTP de cantidadTotal');
+      }
+    } catch (e) {
+      // Manejar errores, como problemas de conexión
+      print('Error al obtener cantidadTotal: $e');
+    }
+  }
+
+  void obtenerCantidadEnGestion() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/cantidadEnGestion'),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        // Accede al valor "CantidadTotal" en el JSON
+        final numeroList = jsonData['numero'] as List<dynamic>;
+
+        if (numeroList.isNotEmpty) {
+          // Obtén el valor "Numero" del primer elemento de la lista
+          final nuevaCantidadEnGestion = numeroList[0]['Numero'] as int;
+
+          setState(() {
+            cantidadEnGestion = nuevaCantidadEnGestion;
+          });
+        } else {
+          // Manejar el caso en que la lista esté vacía
+          print('La lista "numero" está vacía en el JSON');
+        }
+      } else {
+        // Manejar el caso en que la solicitud no sea exitosa
+        print('Error en la solicitud HTTP de cantidadTotal');
+      }
+    } catch (e) {
+      // Manejar errores, como problemas de conexión
+      print('Error al obtener cantidadTotal: $e');
+    }
+  }
+
+  void obtenerCantidadEnMovil() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/cantidadMovil'),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        // Accede al valor "CantidadTotal" en el JSON
+        final numeroList = jsonData['numero'] as List<dynamic>;
+
+        if (numeroList.isNotEmpty) {
+          // Obtén el valor "Numero" del primer elemento de la lista
+          final nuevaCantidadEnMovil = numeroList[0]['Numero'] as int;
+
+          setState(() {
+            cantidadEnMovil = nuevaCantidadEnMovil;
+          });
+        } else {
+          // Manejar el caso en que la lista esté vacía
+          print('La lista "numero" está vacía en el JSON');
+        }
+      } else {
+        // Manejar el caso en que la solicitud no sea exitosa
+        print('Error en la solicitud HTTP de cantidadTotal');
+      }
+    } catch (e) {
+      // Manejar errores, como problemas de conexión
+      print('Error al obtener cantidadTotal: $e');
+    }
   }
 
   void getNombrePunto() async {
@@ -63,39 +217,22 @@ class _MenuState extends State<MenuAdmin> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: ListTile(
-                title: Row(
+                title: const Row(
                   mainAxisAlignment: MainAxisAlignment
                       .spaceBetween, // Añadido para distribuir el espacio
                   children: [
-                    const Flexible(
+                    Flexible(
                       // Utilizado para el texto para que se ajuste automáticamente
                       child: Text(
-                        'Pedidos Estancados', // Texto que aparece primero
+                        'Dashboard', // Texto que aparece primero
                         style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: const BoxDecoration(
-                        color: Colors.red, // Fondo rojo del círculo
-                        shape: BoxShape.circle, // Forma del círculo
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '1', // Número 1 que aparece en el círculo
-                          style: TextStyle(
-                            color: Colors.black, // Color del número (negro)
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ),
                     ),
                   ],
                 ),
-                leading: const Icon(Icons.dangerous, color: Colors.red),
+                leading: const Icon(Icons.dashboard, color: Colors.blue),
                 onTap: () {
-                  VRouter.of(context).to('/estancadosadmin');
+                  VRouter.of(context).to('/dashboard');
                 },
               ),
             ),
@@ -124,10 +261,11 @@ class _MenuState extends State<MenuAdmin> {
                         color: Colors.red, // Fondo rojo del círculo
                         shape: BoxShape.circle, // Forma del círculo
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          '1', // Número 1 que aparece en el círculo
-                          style: TextStyle(
+                          cantidadTotal
+                              .toString(), // Número 1 que aparece en el círculo
+                          style: const TextStyle(
                             color: Colors.black, // Color del número (negro)
                             fontWeight: FontWeight.bold,
                           ),
@@ -140,6 +278,51 @@ class _MenuState extends State<MenuAdmin> {
                     const Icon(Icons.arrow_circle_right, color: Colors.blue),
                 onTap: () {
                   VRouter.of(context).to('/administrador');
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(158, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Añadido para distribuir el espacio
+                  children: [
+                    const Flexible(
+                      // Utilizado para el texto para que se ajuste automáticamente
+                      child: Text(
+                        'Pedidos Estancados', // Texto que aparece primero
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Colors.red, // Fondo rojo del círculo
+                        shape: BoxShape.circle, // Forma del círculo
+                      ),
+                      child: Center(
+                        child: Text(
+                          cantidadSinImpuestos
+                              .toString(), // Número 1 que aparece en el círculo
+                          style: const TextStyle(
+                            color: Colors.black, // Color del número (negro)
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                leading: const Icon(Icons.dangerous, color: Colors.red),
+                onTap: () {
+                  VRouter.of(context).to('/estancadosadmin');
                 },
               ),
             ),
@@ -174,10 +357,11 @@ class _MenuState extends State<MenuAdmin> {
                               color: Colors.red, // Fondo rojo del círculo
                               shape: BoxShape.circle, // Forma del círculo
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Text(
-                                '1', // Número 1 que aparece en el círculo
-                                style: TextStyle(
+                                cantidadEnGestion
+                                    .toString(), // Número 1 que aparece en el círculo
+                                style: const TextStyle(
                                   color:
                                       Colors.black, // Color del número (negro)
                                   fontWeight: FontWeight.bold,
@@ -218,10 +402,11 @@ class _MenuState extends State<MenuAdmin> {
                               color: Colors.red, // Fondo rojo del círculo
                               shape: BoxShape.circle, // Forma del círculo
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Text(
-                                '1', // Número 1 que aparece en el círculo
-                                style: TextStyle(
+                                cantidadEnMovil
+                                    .toString(), // Número 1 que aparece en el círculo
+                                style: const TextStyle(
                                   color:
                                       Colors.black, // Color del número (negro)
                                   fontWeight: FontWeight.bold,
@@ -252,7 +437,6 @@ class _MenuState extends State<MenuAdmin> {
               ),
               child: TextButton(
                 onPressed: () async {
-                  
                   _showModalPuntos(context);
                 },
                 style: TextButton.styleFrom(
@@ -274,7 +458,6 @@ class _MenuState extends State<MenuAdmin> {
               ),
               child: TextButton(
                 onPressed: () async {
-                  
                   _showModalPuntos(context);
                 },
                 style: TextButton.styleFrom(
@@ -321,7 +504,7 @@ class _MenuState extends State<MenuAdmin> {
               ),
               child: TextButton(
                 onPressed: () async {
-                  VRouter.of(context).to('/pqrs');
+                  VRouter.of(context).to('/reportes');
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -528,8 +711,6 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
-
-
 
   // ignore: unused_element
   void _showModall(BuildContext context, inicio, fin) {

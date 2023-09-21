@@ -42,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         headers: {'Content-Type': 'application/json'},
         body: body,
       );
+      print(response.body);
       // Verificar la respuesta del servi1010197022dor
       if (response.statusCode == 200) {
         // Si la respuesta es exitosa, mostrar un diálogo de éxito

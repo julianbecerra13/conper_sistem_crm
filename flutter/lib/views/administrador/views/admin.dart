@@ -75,7 +75,7 @@ class _AdministradorState extends State<Administrador> {
     return Scaffold(
       body: Row(
         children: [
-          MenuAdmin(),
+          const MenuAdmin(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -259,7 +259,6 @@ class _AdministradorState extends State<Administrador> {
         Uri.parse('http://localhost:8080/aggdomiciliarios'),
         body: json.encode({"cedula": value}));
     List<dynamic> domi = [];
-    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
       if (data == null) {

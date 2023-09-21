@@ -1,7 +1,9 @@
 import 'package:conper/views/administrador/views/admin.dart';
+import 'package:conper/views/administrador/views/dashboard.dart';
 import 'package:conper/views/administrador/views/domiciliosadm.dart';
 import 'package:conper/views/administrador/views/p_estancadosadm.dart';
 import 'package:conper/views/administrador/views/pedidosadm.dart';
+import 'package:conper/views/administrador/views/reporteadm.dart';
 import 'package:conper/views/domiciliopriv.dart';
 import 'package:conper/views/domicilios.dart';
 import 'package:conper/views/novedades.dart';
@@ -58,8 +60,8 @@ List<VRouteElement> buildRoutes() {
         VWidget(path: '/estancadosadmin', widget: const PedidosEstancadosadm()),
         VWidget(path: '/domiciliosadmin', widget: const Domiciliosadm()),
         VWidget(path: '/pedidosadmin', widget: const Pedidosadm()),
-        
-
+        VWidget(path: '/dashboard', widget: const Dashboard()),
+        VWidget(path: '/reportes', widget: const Reportes()),
         VGuard(
           beforeEnter: (vRedirector) async {
             final prefs = await SharedPreferences.getInstance();
@@ -67,7 +69,7 @@ List<VRouteElement> buildRoutes() {
             if (loginValue == "6") {
               vRedirector.to('/domiciliario');
             } else if (loginValue == "1") {
-              vRedirector.to('/administrador');
+              vRedirector.to('/dashboard');
             }
           },
           stackedRoutes: [
