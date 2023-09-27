@@ -108,7 +108,7 @@ class _PedidosState extends State<PedidosEstancadosadm> {
     return Scaffold(
       body: Row(
         children: [
-          MenuAdmin(),
+          const MenuAdmin(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -130,11 +130,10 @@ class _PedidosState extends State<PedidosEstancadosadm> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                             Flexible(
+                            Flexible(
                               // ignore: sized_box_for_whitespace
                               child: Container(
                                 height: 40,
-                              
                               ),
                             ),
                             const SizedBox(width: 10),
