@@ -75,7 +75,7 @@ class _TrasabilidadState extends State<Trasabilidad> {
     return Scaffold(
       body: Row(
         children: [
-          Menu(),
+          const Menu(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -272,7 +272,6 @@ class _TrasabilidadState extends State<Trasabilidad> {
         Uri.parse('http://localhost:8080/aggdomiciliarios'),
         body: json.encode({"cedula": value}));
     List<dynamic> domi = [];
-    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
       if (data == null) {

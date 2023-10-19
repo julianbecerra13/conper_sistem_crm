@@ -30,6 +30,7 @@ class _PedidosadmState extends State<Pedidosadm> {
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    // ignore: use_build_context_synchronously
     VRouter.of(context).to('/');
   }
 
@@ -41,7 +42,7 @@ class _PedidosadmState extends State<Pedidosadm> {
   }
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       checkForNewOrder();
     });
   }
@@ -143,7 +144,7 @@ class _PedidosadmState extends State<Pedidosadm> {
     return Scaffold(
       body: Row(
         children: [
-          MenuAdmin(),
+          const MenuAdmin(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -268,15 +269,15 @@ class _PedidosadmState extends State<Pedidosadm> {
                                         _showModal(context, info);
                                         getDomiciliarios(info["IdPunto"]);
                                       },
+                                      onOptionalButtonPressed: (inf) async {
+                                        _showModalDetalles(context, inf);
+                                      },
+                                      showOptionalButton: true,
                                       child: const Icon(
                                         Icons.motorcycle,
                                         color: Colors.white,
                                         size: 30,
                                       ),
-                                      onOptionalButtonPressed: (inf) async {
-                                        _showModalDetalles(context, inf);
-                                      },
-                                      showOptionalButton: true,
                                     ),
                                   ),
                                 ),

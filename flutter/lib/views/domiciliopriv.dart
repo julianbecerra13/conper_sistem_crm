@@ -42,7 +42,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
   }
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       checkForNewOrder();
     });
   }
@@ -326,6 +326,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Actualizar(int variable, info) async {
     final prefs = await SharedPreferences.getInstance();
     await http
@@ -367,7 +368,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
               const SizedBox(height: 20),
               const Text("Transferir a:", style: TextStyle(fontSize: 24)),
               const SizedBox(height: 20),
-              Container(
+              SizedBox(
                 height: screenHeight * 0.6, // Ajusta la altura del Card
                 child: Card(
                   elevation: 8,
@@ -379,6 +380,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
                         {"Titulo": "Nombre", "key": "nombre"},
                         {"Titulo": "ID", "key": "idDomiciliario"}
                       ],
+                      // ignore: non_constant_identifier_names
                       onButtonPressed: (Domicilio) async {
                         await http
                             .put(Uri.parse('http://localhost:8080/transferir'),
@@ -535,7 +537,7 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
         }
 
         return AlertDialog(
-          content: Container(
+          content: SizedBox(
             width: contentWidth,
             height: contentHeight,
             child: ReporteDomi(

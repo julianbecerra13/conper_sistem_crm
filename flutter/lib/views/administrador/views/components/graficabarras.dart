@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class MonthlyDataWidget extends StatefulWidget {
+  const MonthlyDataWidget({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _MonthlyDataWidgetState createState() => _MonthlyDataWidgetState();
 }
 
@@ -33,7 +36,7 @@ class _MonthlyDataWidgetState extends State<MonthlyDataWidget> {
   @override
   Widget build(BuildContext context) {
     return apiData.isEmpty
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
             child: Wrap(
               spacing: 16,

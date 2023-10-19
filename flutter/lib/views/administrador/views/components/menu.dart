@@ -35,7 +35,7 @@ class _MenuState extends State<MenuAdmin> {
     obtenerCantidadTotal();
     obtenerCantidadEnGestion();
     obtenerCantidadEnMovil();
-    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
       obtenerCantidadSinImprimir();
       obtenerCantidadTotal();
       obtenerCantidadEnGestion();
@@ -99,15 +99,12 @@ class _MenuState extends State<MenuAdmin> {
           });
         } else {
           // Manejar el caso en que la lista esté vacía
-          print('La lista "numero" está vacía en el JSON');
         }
       } else {
         // Manejar el caso en que la solicitud no sea exitosa
-        print('Error en la solicitud HTTP');
       }
     } catch (e) {
       // Manejar errores, como problemas de conexión
-      print('Error al obtener la cantidad: $e');
     }
   }
 
@@ -132,15 +129,12 @@ class _MenuState extends State<MenuAdmin> {
           });
         } else {
           // Manejar el caso en que la lista esté vacía
-          print('La lista "numero" está vacía en el JSON');
         }
       } else {
         // Manejar el caso en que la solicitud no sea exitosa
-        print('Error en la solicitud HTTP de cantidadTotal');
       }
     } catch (e) {
       // Manejar errores, como problemas de conexión
-      print('Error al obtener cantidadTotal: $e');
     }
   }
 
@@ -165,15 +159,12 @@ class _MenuState extends State<MenuAdmin> {
           });
         } else {
           // Manejar el caso en que la lista esté vacía
-          print('La lista "numero" está vacía en el JSON');
         }
       } else {
         // Manejar el caso en que la solicitud no sea exitosa
-        print('Error en la solicitud HTTP de cantidadTotal');
       }
     } catch (e) {
       // Manejar errores, como problemas de conexión
-      print('Error al obtener cantidadTotal: $e');
     }
   }
 
@@ -198,15 +189,12 @@ class _MenuState extends State<MenuAdmin> {
           });
         } else {
           // Manejar el caso en que la lista esté vacía
-          print('La lista "numero" está vacía en el JSON');
         }
       } else {
         // Manejar el caso en que la solicitud no sea exitosa
-        print('Error en la solicitud HTTP de cantidadTotal');
       }
     } catch (e) {
       // Manejar errores, como problemas de conexión
-      print('Error al obtener cantidadTotal: $e');
     }
   }
 

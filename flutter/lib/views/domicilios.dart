@@ -106,7 +106,7 @@ class _DomiciliosState extends State<Domicilios> {
     return Scaffold(
       body: Row(
         children: [
-          Menu(),
+          const Menu(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -368,6 +368,7 @@ class _DomiciliosState extends State<Domicilios> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Actualizar(int variable, info) async {
     final prefs = await SharedPreferences.getInstance();
     await http
@@ -415,6 +416,7 @@ class _DomiciliosState extends State<Domicilios> {
                       {"Titulo": "Nane", "key": "nombre"},
                       {"Titulo": "ID", "key": "idDomiciliario"}
                     ],
+                    // ignore: non_constant_identifier_names
                     onButtonPressed: (Domicilio) async {
                       await http
                           .put(Uri.parse('http://localhost:8080/transferir'),

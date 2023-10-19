@@ -8,7 +8,7 @@ import '../../models/domiciliario.dart';
 import '../cajapunto.dart';
 
 class Menu extends StatefulWidget {
-  Menu({Key? key}) : super(key: key);
+  const Menu({Key? key}) : super(key: key);
 
   @override
   State<Menu> createState() => _MenuState();
@@ -530,7 +530,7 @@ class _MenuState extends State<Menu> {
                           // ignore: sized_box_for_whitespace
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width - 1000,
                               child: TextField(
                                 controller: inicioController,
@@ -551,7 +551,7 @@ class _MenuState extends State<Menu> {
                           const SizedBox(width: 20),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width - 1000,
                               child: TextField(
                                 controller: finController,
@@ -651,7 +651,7 @@ class _MenuState extends State<Menu> {
                           // ignore: sized_box_for_whitespace
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width - 1000,
                               child: TextField(
                                 controller: inicioController,

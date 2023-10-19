@@ -5,7 +5,6 @@ import 'package:conper/views/components/tablad.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:vrouter/vrouter.dart';
 
 class Cajacuadre extends StatefulWidget {
   final dynamic inicio;
@@ -23,13 +22,6 @@ class Cajacuadre extends StatefulWidget {
 
 class _CajacuadreState extends State<Cajacuadre> {
   List<Map<String, dynamic>> cajaList = [];
-
-  Future<void> _logOut(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    // ignore: use_build_context_synchronously
-    VRouter.of(context).to('/');
-  }
 
   @override
   void initState() {

@@ -12,10 +12,10 @@ import 'package:http/http.dart' as http;
 class Pqrs extends StatefulWidget {
   const Pqrs({Key? key}) : super(key: key);
   @override
-  State<Pqrs> createState() => _pqrsState();
+  State<Pqrs> createState() => _PqrsState();
 }
 
-class _pqrsState extends State<Pqrs> {
+class _PqrsState extends State<Pqrs> {
   List<Map<String, dynamic>> pqrsList = [];
 
   Future<void> _logOut(BuildContext context) async {
@@ -67,7 +67,7 @@ class _pqrsState extends State<Pqrs> {
     return Scaffold(
         body: Row(
       children: [
-        Menu(),
+        const Menu(),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

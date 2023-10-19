@@ -67,7 +67,7 @@ class _NovedadesState extends State<Novedades> {
     return Scaffold(
         body: Row(
       children: [
-        Menu(),
+        const Menu(),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

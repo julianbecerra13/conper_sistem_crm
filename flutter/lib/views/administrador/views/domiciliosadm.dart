@@ -20,14 +20,6 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
   List<Map<String, dynamic>> ordersTraza = [];
   List<Map<String, dynamic>> domiciliariosList = [];
 
-  Future<void> _logOut(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.clear();
-    // ignore: use_build_context_synchronously
-    VRouter.of(context).to('/');
-  }
-
   @override
   void initState() {
     super.initState();
@@ -105,7 +97,7 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
     return Scaffold(
       body: Row(
         children: [
-          MenuAdmin(),
+          const MenuAdmin(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -324,7 +316,8 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
     );
   }
 
-  Actualizar(int variable, info) async {
+  // ignore: non_constant_identifier_names
+  void Actualizar(int variable, info) async {
     await http
         .put(Uri.parse('http://localhost:8080/actualizarT'),
             body: json.encode({
@@ -370,6 +363,7 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
                       {"Titulo": "Nane", "key": "nombre"},
                       {"Titulo": "ID", "key": "idDomiciliario"}
                     ],
+                    // ignore: non_constant_identifier_names
                     onButtonPressed: (Domicilio) async {
                       await http
                           .put(Uri.parse('http://localhost:8080/transferir'),

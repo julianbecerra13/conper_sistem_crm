@@ -294,7 +294,7 @@ class _AdministradorState extends State<Administrador> {
                 child: Card(
                   elevation: 8,
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: Tablaadm(
                       data: puntosList,
                       headers: const [

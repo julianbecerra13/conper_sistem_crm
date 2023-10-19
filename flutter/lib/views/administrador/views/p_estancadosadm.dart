@@ -233,15 +233,12 @@ class _PedidosState extends State<PedidosEstancadosadm> {
                                         ],
                                         // ignore: non_constant_identifier_names
                                         onButtonPressed: (info) async {
-                                          final prefs = await SharedPreferences
-                                              .getInstance();
                                           await http
                                               .put(
                                                   Uri.parse(
                                                       'http://localhost:8080/actualizarT'),
                                                   body: json.encode({
-                                                    "idPunto":
-                                                        prefs.getInt("IDPunto"),
+                                                    "idPunto": info["IdPunto"],
                                                     "idPedido":
                                                         info["idGeneral"],
                                                     "idTraza": 2,

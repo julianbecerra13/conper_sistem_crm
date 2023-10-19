@@ -29,6 +29,7 @@ class _PedidosState extends State<Pedidos> {
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    // ignore: use_build_context_synchronously
     VRouter.of(context).to('/');
   }
 
@@ -41,7 +42,7 @@ class _PedidosState extends State<Pedidos> {
   }
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       checkForNewOrder();
     });
   }
@@ -143,7 +144,7 @@ class _PedidosState extends State<Pedidos> {
     return Scaffold(
       body: Row(
         children: [
-          Menu(),
+          const Menu(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -167,10 +168,10 @@ class _PedidosState extends State<Pedidos> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(
-                              child: Container(
+                            const Flexible(
+                              child: SizedBox(
                                 height: 40,
-                                child: const TextField(
+                                child: TextField(
                                   controller: null,
                                   decoration: InputDecoration(
                                     contentPadding:
@@ -267,39 +268,36 @@ class _PedidosState extends State<Pedidos> {
                                           "Titulo": 'Total de la orden',
                                           "key": "TotalOrden"
                                         },
-                                        {
-                                          "Titulo": 'Fecha',
-                                          "key": "FechaCrea"
-                                        },
+                                        {"Titulo": 'Fecha', "key": "FechaCrea"},
                                         {
                                           "Titulo": 'Estado',
                                           "key": "NombreTraza"
                                         },
                                         {
-                                            "Titulo": 'Punto',
-                                            "key": "PuntodeVenta"
-                                          },
-                                          {
-                                            "Titulo": 'Observaciones',
-                                            "key": "Observaciones"
-                                          },
-                                          {
-                                            "Titulo": 'Telefono',
-                                            "key": "Telefono"
-                                          },
+                                          "Titulo": 'Punto',
+                                          "key": "PuntodeVenta"
+                                        },
+                                        {
+                                          "Titulo": 'Observaciones',
+                                          "key": "Observaciones"
+                                        },
+                                        {
+                                          "Titulo": 'Telefono',
+                                          "key": "Telefono"
+                                        },
                                       ],
                                       onButtonPressed: (info) {
                                         _showModal(context, info);
                                       },
+                                      onOptionalButtonPressed: (inf) async {
+                                        _showModalDetalles(context, inf);
+                                      },
+                                      showOptionalButton: true,
                                       child: const Icon(
                                         Icons.motorcycle,
                                         color: Colors.white,
                                         size: 30,
                                       ),
-                                      onOptionalButtonPressed: (inf) async {
-                                        _showModalDetalles(context, inf);
-                                      },
-                                      showOptionalButton: true,
                                     ),
                                   ),
                                 ),

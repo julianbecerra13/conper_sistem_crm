@@ -25,13 +25,6 @@ class Cajapunto extends StatefulWidget {
 class _cajapuntoState extends State<Cajapunto> {
   List<Map<String, dynamic>> cajaList2 = [];
 
-  Future<void> _logOut(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    // ignore: use_build_context_synchronously
-    VRouter.of(context).to('/');
-  }
-
   @override
   void initState() {
     super.initState();

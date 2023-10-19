@@ -27,6 +27,7 @@ class _PedidosState extends State<PedidosEstancados> {
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    // ignore: use_build_context_synchronously
     VRouter.of(context).to('/');
   }
 
@@ -107,7 +108,7 @@ class _PedidosState extends State<PedidosEstancados> {
     return Scaffold(
       body: Row(
         children: [
-          Menu(),
+          const Menu(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

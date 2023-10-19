@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:conper/views/administrador/models/reportesinfo.dart';
 import 'package:conper/views/administrador/views/components/menu.dart';
@@ -186,6 +188,7 @@ class _ReportesState extends State<Reportes> {
                                             final jsonResponse =
                                                 json.decode(response.body);
                                             // Llama a _showModal solo con Idreporte
+                                            // ignore: use_build_context_synchronously
                                             _showModal(
                                                 context, jsonResponse, call);
                                           } else {
@@ -223,6 +226,7 @@ class _ReportesState extends State<Reportes> {
 
   void _showModal(
       BuildContext context, Map<String, dynamic> jsonResponse, call) {
+    // ignore: non_constant_identifier_names
     var Call = call;
     Map<String, dynamic> formData = {};
 
@@ -241,9 +245,9 @@ class _ReportesState extends State<Reportes> {
           content: SingleChildScrollView(
             child: Column(
               children: parametros?.map<Widget>((parametro) {
-                    final parametroNombre = parametro?['Parametro'];
+                    final parametroNombre = parametro['Parametro'];
                     final parametroQueryParametro =
-                        parametro?['QueryParametro'];
+                        parametro['QueryParametro'];
 
                     if (parametroQueryParametro == "") {
                       if (parametroNombre == "Combo") {
@@ -301,7 +305,7 @@ class _ReportesState extends State<Reportes> {
                       }
                     }
                     return const SizedBox();
-                  })?.toList() ??
+                  }).toList() ??
                   [], // Usa una lista vacía si parametros es nulo
             ),
           ),
@@ -331,8 +335,10 @@ class _ReportesState extends State<Reportes> {
                       final jsonResponse = json.decode(response.body);
                       // Comprueba si la respuesta es una cadena y la convierte en un mapa
                       if (jsonResponse is String) {
+                        // ignore: use_build_context_synchronously
                         _showModal1(context, json.decode(jsonResponse));
                       } else {
+                        // ignore: use_build_context_synchronously
                         _showModal1(context, jsonResponse);
                       }
                     } catch (e) {

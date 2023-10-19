@@ -14,7 +14,6 @@ import 'package:conper/views/trasabilidad.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
-import 'views/administrador/views/pqrsadm.dart';
 import 'views/login.dart';
 
 void main() {
