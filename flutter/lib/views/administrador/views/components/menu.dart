@@ -814,6 +814,7 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
+
   void _showModalPuntospqrs(BuildContext context, ordersPuntos) {
     showDialog(
       context: context,
@@ -839,8 +840,7 @@ class _MenuState extends State<MenuAdmin> {
                       ],
                       // ignore: non_constant_identifier_names
                       onButtonPressed: (info) async {
-                        var idpunto = info['Id'];
-                        Pqrsadm(idpunto);
+                        _showPqrsAdmModal(context, info['Id']);
                       },
                       showOptionalButton: false,
                       child: const Icon(
@@ -852,6 +852,21 @@ class _MenuState extends State<MenuAdmin> {
                 ),
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPqrsAdmModal(BuildContext context, int idPunto) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Container(
+            width: double.maxFinite,
+            height: double.maxFinite, // Ajusta la altura según tus necesidades
+            child: Pqrsadm(idPunto),
           ),
         );
       },

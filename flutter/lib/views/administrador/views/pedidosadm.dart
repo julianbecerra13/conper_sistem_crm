@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:conper/views/administrador/views/components/menu.dart';
+import 'package:conper/views/administrador/views/components/modaladm.dart';
 import 'package:conper/views/administrador/views/components/tablaadm.dart';
 
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:vrouter/vrouter.dart';
 
 import '../../../models/domiciliario.dart';
 import '../../../models/ordenes.dart';
-import '../../components/modal.dart';
 import '../../components/modald.dart';
 
 class Pedidosadm extends StatefulWidget {
@@ -37,7 +37,6 @@ class _PedidosadmState extends State<Pedidosadm> {
   void initState() {
     super.initState();
     getOrders();
-    getDomiciliarios();
     startTimer();
   }
 
@@ -82,8 +81,8 @@ class _PedidosadmState extends State<Pedidosadm> {
     });
   }
 
-  void getDomiciliarios() async {
-    await _getDomiciliarios().then((value) {
+  void getDomiciliarios(idpunto) async {
+    await _getDomiciliarios(idpunto).then((value) {
       setState(() {
         domiciliariosList = value;
       });
@@ -114,10 +113,10 @@ class _PedidosadmState extends State<Pedidosadm> {
     return orderMap;
   }
 
-  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+  Future<List<Map<String, dynamic>>> _getDomiciliarios(idpunto) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=$idpunto'));
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];
@@ -166,11 +165,10 @@ class _PedidosadmState extends State<Pedidosadm> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                             Flexible(
+                            Flexible(
                               // ignore: sized_box_for_whitespace
                               child: Container(
                                 height: 40,
-                              
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -248,29 +246,27 @@ class _PedidosadmState extends State<Pedidosadm> {
                                           "Titulo": 'Total de la orden',
                                           "key": "TotalOrden"
                                         },
-                                        {
-                                          "Titulo": 'Fecha',
-                                          "key": "FechaCrea"
-                                        },
+                                        {"Titulo": 'Fecha', "key": "FechaCrea"},
                                         {
                                           "Titulo": 'Estado',
                                           "key": "NombreTraza"
                                         },
                                         {
-                                            "Titulo": 'Punto',
-                                            "key": "PuntodeVenta"
-                                          },
-                                          {
-                                            "Titulo": 'Observaciones',
-                                            "key": "Observaciones"
-                                          },
-                                          {
-                                            "Titulo": 'Telefono',
-                                            "key": "Telefono"
-                                          },
+                                          "Titulo": 'Punto',
+                                          "key": "PuntodeVenta"
+                                        },
+                                        {
+                                          "Titulo": 'Observaciones',
+                                          "key": "Observaciones"
+                                        },
+                                        {
+                                          "Titulo": 'Telefono',
+                                          "key": "Telefono"
+                                        },
                                       ],
                                       onButtonPressed: (info) {
                                         _showModal(context, info);
+                                        getDomiciliarios(info["IdPunto"]);
                                       },
                                       child: const Icon(
                                         Icons.motorcycle,
@@ -305,7 +301,7 @@ class _PedidosadmState extends State<Pedidosadm> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: MyModalContent(
+          content: MyModalContentadm(
             domiciliariosList: domiciliariosList,
             informacion: info,
             opcion: 5,

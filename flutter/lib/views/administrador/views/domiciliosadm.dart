@@ -32,7 +32,6 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
   void initState() {
     super.initState();
     getOrders();
-    getDomiciliarios();
   }
 
   void getOrders() async {
@@ -43,15 +42,15 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
     });
   }
 
-  void getDomiciliarios() async {
-    await _getDomiciliarios().then((value) {
+  void getDomiciliarios(idpunto) async {
+    await _getDomiciliarios(idpunto).then((value) {
       setState(() {
         domiciliariosList = value;
       });
     });
   }
 
-  Future<List<Map<String, dynamic>>> _getDomiciliarios() async {
+  Future<List<Map<String, dynamic>>> _getDomiciliarios(idpunto) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
         'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
@@ -224,6 +223,7 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
                                         ],
                                         // ignore: non_constant_identifier_names
                                         onButtonPressed: (info) async {
+                                          getDomiciliarios(info["IdPunto"]);
                                           _showModal(context, info);
                                         },
                                         onOptionalButtonPressed: (inf) {
@@ -325,11 +325,10 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
   }
 
   Actualizar(int variable, info) async {
-    final prefs = await SharedPreferences.getInstance();
     await http
         .put(Uri.parse('http://localhost:8080/actualizarT'),
             body: json.encode({
-              "idPunto": prefs.getInt("IDPunto"),
+              "idPunto": info["IdPunto"],
               "idPedido": info["idGeneral"],
               "idincidente": variable,
               "idTraza": 6,
@@ -393,7 +392,6 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
                             ),
                           );
                         } else {
-                          
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("No se ha asignado el pedido"),

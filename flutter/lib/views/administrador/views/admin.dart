@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:conper/models/domi.dart';
 import 'package:conper/models/ordenes2.dart';
+import 'package:conper/views/administrador/models/Punto.dart';
 import 'package:conper/views/administrador/views/components/menu.dart';
 import 'package:conper/views/administrador/views/components/tablaadm.dart';
 import 'package:conper/views/components/modald.dart';
@@ -22,6 +23,7 @@ class Administrador extends StatefulWidget {
 class _AdministradorState extends State<Administrador> {
   List<Map<String, dynamic>> ordersTraza = [];
   List<Map<String, dynamic>> domis = [];
+  List<Map<String, dynamic>> puntosList = [];
 
   Future<void> _logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -34,6 +36,7 @@ class _AdministradorState extends State<Administrador> {
   void initState() {
     super.initState();
     getOrders();
+    getPuntos();
   }
 
   void getOrders() async {
@@ -44,20 +47,48 @@ class _AdministradorState extends State<Administrador> {
     });
   }
 
+  void getPuntos() async {
+    await _getPuntos().then((value) {
+      setState(() {
+        puntosList = value;
+      });
+    });
+  }
+
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(Uri.parse(
         'http://localhost:8080/domicilios?idCliente=${prefs.getString("login")}&idTraza=6&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
-    
-    if (response.statusCode == 200) {
 
+    if (response.statusCode == 200) {
       final data = json.decode(response.body)["ordenes"];
       if (data == null) {
         return [];
       }
       orders = data.map((order) => Ordenes2.fromJson(order)).toList();
+    } else {
+      throw Exception('Failed to load orders');
+    }
+
+    List<Map<String, dynamic>> orderMap = [];
+
+    for (var order in orders) {
+      orderMap.add(order.toJson());
+    }
+    return orderMap;
+  }
+
+  Future<List<Map<String, dynamic>>> _getPuntos() async {
+    final response = await http.get(Uri.parse('http://localhost:8080/puntos'));
+    List<dynamic> orders = [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)["reportes"];
+      if (data == null) {
+        return [];
+      }
+      orders = data.map((order) => Punto.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
     }
@@ -97,11 +128,10 @@ class _AdministradorState extends State<Administrador> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                             Flexible(
+                            Flexible(
                               // ignore: sized_box_for_whitespace
                               child: Container(
                                 height: 40,
-                              
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -157,12 +187,7 @@ class _AdministradorState extends State<Administrador> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ))),
                                     onPressed: () async {
-                                      // ignore: unused_local_variable
-                                      final prefs =
-                                          await SharedPreferences.getInstance();
-                                      var punto = prefs.getInt("IDPunto");
-                                      // ignore: use_build_context_synchronously
-                                      _showModal2(context, punto);
+                                      _showModalPuntospqrs(context, puntosList);
                                     },
                                     child: const Padding(
                                       padding: EdgeInsets.symmetric(
@@ -253,7 +278,50 @@ class _AdministradorState extends State<Administrador> {
     );
   }
 
-  
+  void _showModalPuntospqrs(BuildContext context, puntosList) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Selecionar el Punto para Agregar Domiciliario"),
+              SizedBox(
+                height: 400,
+                width: 300,
+                child: Card(
+                  elevation: 8,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(5),
+                    child: Tablaadm(
+                      data: puntosList,
+                      headers: const [
+                        {"Titulo": 'Id', "key": "Id"},
+                        {"Titulo": 'Nombre', "key": "Nombre"},
+                      ],
+                      // ignore: non_constant_identifier_names
+                      onButtonPressed: (info) async {
+                        var punto = info['Id'];
+                        _showModal2(context, punto);
+                      },
+                      showOptionalButton: false,
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<List<Map<String, dynamic>>> _getDomis(value) async {
     final response = await http.put(
         Uri.parse('http://localhost:8080/aggdomiciliarios'),
@@ -336,7 +404,7 @@ class _AdministradorState extends State<Administrador> {
                             const SizedBox(width: 20),
                             ElevatedButton.icon(
                                 onPressed: () {
-                                  _showModalForm(context);
+                                  _showModalForm(context, punto);
                                 },
                                 icon: const Icon(Icons.add),
                                 label: const Text("Crear un Domiciliario")),
@@ -365,8 +433,6 @@ class _AdministradorState extends State<Administrador> {
                                   {"Titulo": 'Punto', "key": 'IdPunto'},
                                 ],
                                 onButtonPressed: (informacion) async {
-                                  final prefs =
-                                      await SharedPreferences.getInstance();
                                   await http
                                       .put(
                                           Uri.parse(
@@ -377,7 +443,7 @@ class _AdministradorState extends State<Administrador> {
                                                 informacion['Identificacion'],
                                             "Nombre": informacion['Nombre'],
                                             "Telefono": informacion['Telefono'],
-                                            "idPunto": prefs.getInt('IDPunto'),
+                                            "idPunto": punto,
                                           }))
                                       .then((response) {
                                     if (response.statusCode == 200) {
@@ -414,7 +480,7 @@ class _AdministradorState extends State<Administrador> {
   final TextEditingController cedulaController = TextEditingController();
   final TextEditingController telefonoController = TextEditingController();
 
-  void _showModalForm(BuildContext context) {
+  void _showModalForm(BuildContext context, punto) {
     showDialog(
         context: context,
         builder: (context) {
@@ -516,9 +582,6 @@ class _AdministradorState extends State<Administrador> {
                                         cursor: SystemMouseCursors.click,
                                         child: GestureDetector(
                                           onTap: () async {
-                                            final prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
                                             await http
                                                 .put(
                                                     Uri.parse(
@@ -532,8 +595,7 @@ class _AdministradorState extends State<Administrador> {
                                                       "Telefono":
                                                           telefonoController
                                                               .text,
-                                                      "idPunto": prefs
-                                                          .getInt('IDPunto'),
+                                                      "idPunto": punto,
                                                     }))
                                                 .then((response) {
                                               if (response.statusCode == 200) {

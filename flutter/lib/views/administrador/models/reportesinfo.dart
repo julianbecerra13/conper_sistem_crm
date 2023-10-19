@@ -3,7 +3,7 @@ class Reporte {
   late String nombre;
   late String descripcion;
   late String call;
-  late String parametros;
+  late int parametros;
 
   Reporte({
     required this.id,
@@ -19,7 +19,7 @@ class Reporte {
       nombre: json['Nombre'] as String,
       descripcion: json['Descripcion'] as String,
       call: json['Call'] as String,
-      parametros: json['Parametros'] as String,
+      parametros: json['Parametros'] as int,
     );
   }
 

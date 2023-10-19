@@ -3,15 +3,17 @@ import 'dart:convert';
 import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vrouter/vrouter.dart';
 
-class MyModalContent extends StatelessWidget {
+class MyModalContentadm extends StatelessWidget {
   final List<Map<String, dynamic>> domiciliariosList;
   final Map<String, dynamic> informacion;
   final int opcion;
-  const MyModalContent(
-      {super.key, required this.domiciliariosList, required this.informacion, required this.opcion});
+  const MyModalContentadm(
+      {super.key,
+      required this.domiciliariosList,
+      required this.informacion,
+      required this.opcion});
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +52,24 @@ class MyModalContent extends StatelessWidget {
                           data: domiciliariosList,
                           headers: const [
                             {"Titulo": "Nombre", "key": "nombre"},
-                            {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
+                            {
+                              "Titulo": "ID Domiciliario",
+                              "key": "idDomiciliario"
+                            }
                           ],
-                      
+
                           // ignore: non_constant_identifier_names
                           onButtonPressed: (Domicilio) async {
-                            final prefs = await SharedPreferences.getInstance();
                             await http
-                                .put(Uri.parse('http://localhost:8080/actualizar'),
+                                .put(
+                                    Uri.parse(
+                                        'http://localhost:8080/actualizar'),
                                     body: json.encode({
-                                      "idPunto": prefs.getInt("idPunto"),
+                                      "idPunto": informacion["IdPunto"],
                                       "idPedido": informacion["idGeneral"],
                                       "idTraza": opcion,
-                                      "idDomiciliario": Domicilio["idDomiciliario"]
+                                      "idDomiciliario":
+                                          Domicilio["idDomiciliario"]
                                     }))
                                 .then((response) {
                               if (response.statusCode == 200) {

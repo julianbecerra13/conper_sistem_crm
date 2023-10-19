@@ -1,6 +1,4 @@
-
-class Ordenes2{
-
+class Ordenes2 {
   late int idOrdenGeneral;
   late String nombreCliente;
   late String direccionOrden;
@@ -8,6 +6,7 @@ class Ordenes2{
   late String fechaCrea;
   late String nombreTraza;
   late String nombreDomiciliario;
+  late int idPunto;
   late String nombrePunto;
   late String observaciones;
   late String telefono;
@@ -20,15 +19,14 @@ class Ordenes2{
     required this.fechaCrea,
     required this.nombreTraza,
     required this.nombreDomiciliario,
+    required this.idPunto,
     required this.nombrePunto,
     required this.observaciones,
     required this.telefono,
-
   });
 
   factory Ordenes2.fromJson(Map<String, dynamic> json) {
     return Ordenes2(
-
       idOrdenGeneral: json['IDOrdenGeneral'] as int,
       nombreCliente: json['NombreCliente'] as String,
       direccionOrden: json['DireccionOrden'] as String,
@@ -36,10 +34,10 @@ class Ordenes2{
       fechaCrea: json['FechaCrea'] as String,
       nombreTraza: json['NombreTraza'] as String,
       nombreDomiciliario: json['NombreDomiciliario'] as String,
+      idPunto: json['IdPunto'] as int,
       nombrePunto: json['PuntodeVenta'] as String,
       observaciones: json['Observaciones'] as String,
       telefono: json['Telefono'] as String,
-
     );
   }
 
@@ -53,12 +51,10 @@ class Ordenes2{
       'FechaCrea': fechaCrea,
       'NombreTraza': nombreTraza,
       'NombreDomiciliario': nombreDomiciliario,
+      'IdPunto': idPunto,
       'PuntodeVenta': nombrePunto,
       'Observaciones': observaciones,
       'Telefono': telefono,
-
-
     };
   }
-
 }

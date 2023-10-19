@@ -5,6 +5,7 @@ class Ordenes {
   late double totalOrden;
   late String fechaCrea;
   late String nombreTraza;
+  late int idPunto;
   late String nombrePunto;
   late String observaciones;
   late String telefono;
@@ -16,6 +17,7 @@ class Ordenes {
     required this.totalOrden,
     required this.fechaCrea,
     required this.nombreTraza,
+    required this.idPunto,
     required this.nombrePunto,
     required this.observaciones,
     required this.telefono,
@@ -29,6 +31,7 @@ class Ordenes {
       totalOrden: json['TotalOrden'] as double,
       fechaCrea: json['FechaCrea'] as String,
       nombreTraza: json['NombreTraza'] as String,
+      idPunto: json['IdPunto'] as int,
       nombrePunto: json['PuntodeVenta'] as String,
       observaciones: json['Observaciones'] as String,
       telefono: json['Telefono'] as String,
@@ -44,6 +47,7 @@ class Ordenes {
       'TotalOrden': totalOrden,
       'FechaCrea': fechaCrea,
       'NombreTraza': nombreTraza,
+      'IdPunto': idPunto, 
       'PuntodeVenta': nombrePunto,
       'Observaciones': observaciones,
       'Telefono': telefono,

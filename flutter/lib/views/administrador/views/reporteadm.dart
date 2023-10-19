@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:conper/views/administrador/models/reportesinfo.dart';
 import 'package:conper/views/administrador/views/components/menu.dart';
+import 'package:conper/views/administrador/views/components/reportemodal.dart';
 import 'package:conper/views/administrador/views/components/tablareportes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,7 +65,7 @@ class _ReportesState extends State<Reportes> {
     return Scaffold(
       body: Row(
         children: [
-          MenuAdmin(),
+          const MenuAdmin(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -160,16 +161,39 @@ class _ReportesState extends State<Reportes> {
                                         },
                                       ],
                                       onButtonPressed: (info) async {
-                                        final id = info["Id"];
-                                        final infocall = info["Call"];
+                                        var idreporte = info['Id'];
+                                        var call = info['Call'];
+                                        final apiUrl = Uri.parse(
+                                            'http://localhost:8080/parametrosreportes');
 
-                                        if (id == 1) {
-                                          // Abre un modal con un formulario de 3 inputs
-                                          showModalWithForm(context, infocall);
-                                        } else if (id == 2) {
-                                          // Abre un modal con un formulario de 2 inputs
-                                          showModalWithFormTwo(
-                                              context, infocall);
+                                        // Crear el mapa del cuerpo de la solicitud
+                                        final requestBody = {
+                                          'id':
+                                              idreporte // Convierte Idreporte a String
+                                        };
+
+                                        try {
+                                          final response = await http.post(
+                                            apiUrl,
+                                            headers: {
+                                              'Content-Type':
+                                                  'application/json',
+                                            },
+                                            body: json.encode(requestBody),
+                                          );
+
+                                          if (response.statusCode == 200) {
+                                            final jsonResponse =
+                                                json.decode(response.body);
+                                            // Llama a _showModal solo con Idreporte
+                                            _showModal(
+                                                context, jsonResponse, call);
+                                          } else {
+                                            print(
+                                                'Error en la solicitud: ${response.statusCode}');
+                                          }
+                                        } catch (e) {
+                                          print('Error en la solicitud: $e');
                                         }
                                       },
                                       showOptionalButton: false,
@@ -197,128 +221,137 @@ class _ReportesState extends State<Reportes> {
     );
   }
 
-  void showModalWithForm(BuildContext context, String infocall) async {
-    final TextEditingController param1Controller = TextEditingController();
-    final TextEditingController param2Controller = TextEditingController();
-    final TextEditingController param4Controller = TextEditingController();
-    final TextEditingController param5Controller = TextEditingController();
-    String selectedComboKey = '';
+  void _showModal(
+      BuildContext context, Map<String, dynamic> jsonResponse, call) {
+    var Call = call;
+    Map<String, dynamic> formData = {};
 
-    final Map<String, String> comboOptions = {
-      'Seleccione una opción de combo': '',
-      'Voz': '1',
-      'Didi': '2',
-      'Web': '3',
-      'ClickDelivery-Delrodeo': '17',
-      'Rappi-Delrodeo': '18',
-      'PaginaWeb-Delrodeo': '19',
-      'Pedidosya-Delrodeo': '20',
-      'Uber Eats-Delrodeo': '21',
-      'Ifood-Delrodeo': '23',
-      'DidiFood': '24',
-      'Descuento Rodeo': '87',
-      'ND': '89',
-    };
-
-    await showDialog(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
+        // Parsea las listas como List<Map<String, dynamic>>
+        final parametros = (jsonResponse['parametros'] as List<dynamic>?)
+            ?.cast<Map<String, dynamic>>();
+        final datoscombo =
+            (jsonResponse['parametrosComboData'] as Map<String, dynamic>?) ??
+                {};
+
         return AlertDialog(
-          title: Text('Formulario de Respuesta'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: param1Controller,
-                decoration: InputDecoration(labelText: 'Fecha'),
-              ),
-              TextFormField(
-                controller: param2Controller,
-                decoration: InputDecoration(labelText: 'Hora'),
-              ),
-              const SizedBox(height: 20),
-              DropdownButton<String>(
-                value: selectedComboKey,
-                items: comboOptions.keys.map((String optionText) {
-                  final optionKey = comboOptions[optionText]!;
-                  return DropdownMenuItem<String>(
-                    value: optionKey,
-                    child: Text(optionText),
+          title: const Text("Formulario Dinámico"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: parametros?.map<Widget>((parametro) {
+                    final parametroNombre = parametro?['Parametro'];
+                    final parametroQueryParametro =
+                        parametro?['QueryParametro'];
+
+                    if (parametroQueryParametro == "") {
+                      if (parametroNombre == "Combo") {
+                        if (datoscombo.containsKey(parametroNombre)) {
+                          final datosCombo =
+                              datoscombo[parametroNombre] as List<dynamic>;
+
+                          if (datosCombo.isNotEmpty) {
+                            return DropdownButtonFormField<String>(
+                              value: formData[parametroNombre] ??
+                                  datosCombo[0]['Nombre'],
+                              onChanged: (value) {
+                                final selectedCombo = datosCombo.firstWhere(
+                                    (combo) => combo['Nombre'] == value);
+                                setState(() {
+                                  formData[parametroNombre] =
+                                      selectedCombo['Codigo'];
+                                });
+                              },
+                              items: datosCombo
+                                  .map<DropdownMenuItem<String>>((combo) {
+                                return DropdownMenuItem<String>(
+                                  value: combo['Nombre'],
+                                  child: Text(combo['Nombre']),
+                                );
+                              }).toList(),
+                              decoration:
+                                  InputDecoration(labelText: parametroNombre),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        }
+                      } else if (parametroNombre == "Numero") {
+                        return TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              formData[parametroNombre] = int.tryParse(value);
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration:
+                              InputDecoration(labelText: parametroNombre),
+                        );
+                      } else {
+                        return TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              formData[parametroNombre] = value;
+                            });
+                          },
+                          decoration:
+                              InputDecoration(labelText: parametroNombre),
+                        );
+                      }
+                    }
+                    return const SizedBox();
+                  })?.toList() ??
+                  [], // Usa una lista vacía si parametros es nulo
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                // Crear un mapa con los datos a enviar
+                final dataToSend = {
+                  "fromData":
+                      formData, // Debe ser un objeto JSON con los campos y valores deseados
+                  "Call": Call,
+                };
+
+                final apiUrl = Uri.parse('http://localhost:8080/procesar');
+
+                try {
+                  final response = await http.post(
+                    apiUrl,
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: json.encode(dataToSend),
                   );
-                }).toList(),
-                onChanged: (String? newKey) {
-                  setState(() {
-                    selectedComboKey = newKey!;
-                  });
-                },
-              ),
-              TextFormField(
-                controller: param4Controller,
-                decoration: InputDecoration(labelText: 'Texto'),
-              ),
-              TextFormField(
-                controller: param5Controller,
-                decoration: InputDecoration(labelText: 'Numero'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                final call = infocall;
-                final param1 = param1Controller.text;
-                final param2 = param2Controller.text;
-                final param3 = selectedComboKey;
-                final param4 = param4Controller.text;
-                final param5 = param5Controller.text;
 
-                final requestBody = {
-                  "Cadena": call,
-                  "Param1": param1,
-                  "Param2": param2,
-                  "Param3": param3,
-                  "Param4": param4,
-                  "Param5": param5,
-                };
-
-                final requestBodyJson = jsonEncode(requestBody);
-
-                final response = await http.post(
-                  Uri.parse('http://localhost:8080/procesar'),
-                  headers: <String, String>{
-                    'Content-Type': 'application/json',
-                  },
-                  body: requestBodyJson,
-                );
-
-                if (response.statusCode == 200) {
-                  // La solicitud se completó con éxito
-                  print('Respuesta de la API: ${response.body}');
-
-                  // Procesar la respuesta de la API y mostrarla en un nuevo modal
-                  final responseData = json.decode(response.body);
-                  if (responseData != null &&
-                      responseData['columns'] != null &&
-                      responseData['data'] != null) {
-                    final columns = responseData['columns'] as List<String>;
-                    final data = responseData['data'] as List<List<dynamic>>;
-
-                    // Abre un nuevo modal para mostrar los resultados
-                    Navigator.pop(
-                        context); // Cerrar el modal de formulario actual
-                    showResultModal(context, columns, data);
+                  if (response.statusCode == 200) {
+                    try {
+                      final jsonResponse = json.decode(response.body);
+                      // Comprueba si la respuesta es una cadena y la convierte en un mapa
+                      if (jsonResponse is String) {
+                        _showModal1(context, json.decode(jsonResponse));
+                      } else {
+                        _showModal1(context, jsonResponse);
+                      }
+                    } catch (e) {
+                      print('Error al decodificar la respuesta JSON: $e');
+                    }
                   } else {
-                    // Manejar el caso en que la respuesta de la API no tenga el formato esperado
+                    print('Error en la solicitud: ${response.statusCode}');
                   }
-                } else {
-                  // Hubo un error en la solicitud a la API
-                  print(
-                      'Error en la solicitud a la API. Código de estado: ${response.statusCode}');
+                } catch (e) {
+                  print('Error en la solicitud: $e');
                 }
-
+              },
+              child: const Text("Enviar"),
+            ),
+            TextButton(
+              onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Enviar'),
+              child: const Text("Cancelar"),
             ),
           ],
         );
@@ -326,108 +359,12 @@ class _ReportesState extends State<Reportes> {
     );
   }
 
-  void showModalWithFormTwo(BuildContext context, String infocall) async {
-    final TextEditingController param1Controller = TextEditingController();
-    final TextEditingController param2Controller = TextEditingController();
-
-    await showDialog(
+  void _showModal1(BuildContext context, Map<String, dynamic> jsonResponse) {
+    final jsonString = json.encode(jsonResponse);
+    showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Formulario de Respuesta'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: param1Controller,
-                decoration: InputDecoration(labelText: 'Fecha Inicial'),
-              ),
-              TextFormField(
-                controller: param2Controller,
-                decoration: InputDecoration(labelText: 'Fecha Final'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                final call = infocall;
-                final param1 = param1Controller.text;
-                final param2 = param2Controller.text;
-
-                final requestBody = {
-                  "Cadena": call,
-                  "Param1": param1,
-                  "Param2": param2,
-                };
-
-                final requestBodyJson = jsonEncode(requestBody);
-
-                final response = await http.post(
-                  Uri.parse('http://localhost:8080/procesar'),
-                  headers: <String, String>{
-                    'Content-Type': 'application/json',
-                  },
-                  body: requestBodyJson,
-                );
-
-                if (response.statusCode == 200) {
-                  // La solicitud se completó con éxito
-                  print('Respuesta de la API: ${response.body}');
-
-                  // Procesar la respuesta de la API y mostrarla en un nuevo modal
-                  final responseData = json.decode(response.body);
-                  if (responseData != null &&
-                      responseData['columns'] != null &&
-                      responseData['data'] != null) {
-                    final columns = responseData['columns'] as List<String>;
-                    final data = responseData['data'] as List<List<dynamic>>;
-
-                    // Abre un nuevo modal para mostrar los resultados
-                    Navigator.pop(
-                        context); // Cerrar el modal de formulario actual
-                    showResultModal(context, columns, data);
-                  } else {
-                    // Manejar el caso en que la respuesta de la API no tenga el formato esperado
-                  }
-                } else {
-                  // Hubo un error en la solicitud a la API
-                  print(
-                      'Error en la solicitud a la API. Código de estado: ${response.statusCode}');
-                }
-
-                Navigator.of(context).pop();
-              },
-              child: Text('Enviar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Función para mostrar el modal de resultados
-  void showResultModal(
-      BuildContext context, List<String> columns, List<List<dynamic>> data) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              DataTable(
-                columns:
-                    columns.map((col) => DataColumn(label: Text(col))).toList(),
-                rows: data
-                    .map((row) => DataRow(
-                        cells: row
-                            .map((cell) => DataCell(Text(cell.toString())))
-                            .toList()))
-                    .toList(),
-              ),
-            ],
-          ),
-        );
+        return ReportesModal(jsonResponse: jsonString);
       },
     );
   }
