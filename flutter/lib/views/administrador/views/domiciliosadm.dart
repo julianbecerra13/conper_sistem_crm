@@ -53,7 +53,7 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
   Future<List<Map<String, dynamic>>> _getDomiciliarios(idpunto) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=${prefs.getInt("IDPunto")}'));
+        'http://localhost:8080/domiciliarios?idCliente=${prefs.getString("login")}&idTraza=$idpunto'));
     List<dynamic> domici = [];
     if (response.statusCode == 200) {
       final data = json.decode(response.body)["domiciliarios"];

@@ -67,34 +67,63 @@ class Tablaadm extends StatelessWidget {
                       : rowData["PuntodeVenta"] == "P.D.V. CENTRO"
                           ? const Color.fromARGB(255, 255, 185, 185)
                           : rowData["PuntodeVenta"] == "P.D.V. BOYACA"
-                      ? const Color.fromARGB(255, 174, 195, 22)
-                      :rowData["PuntodeVenta"] == "P.D.V. PALATINO"
-                      ? const Color.fromARGB(255, 131, 227, 22)
-                      :rowData["PuntodeVenta"] == "P.D.V. CL 170"
-                      ? const Color.fromARGB(255, 212, 49, 35)
-                      :rowData["PuntodeVenta"] == "P.D.V. PORTAL"
-                      ? const Color.fromARGB(255, 200, 22, 138)
-                      :rowData["PuntodeVenta"] == "P.D.V. LA CASTELLANA"
-                      ? const Color.fromARGB(255, 58, 30, 218)
-                      :rowData["PuntodeVenta"] == "P.D.V. PLAZA DE LAS AMERICAS"
-                      ? const Color.fromARGB(255, 36, 193, 241)
-                      :rowData["PuntodeVenta"] == "P.D.V. COLPATRIA"
-                      ? const Color.fromARGB(255, 231, 190, 66)
-                      :rowData["PuntodeVenta"] == "P.D.V. AVENIDA SUBA"
-                      ? const Color.fromARGB(255, 0, 132, 33)
-                      :rowData["PuntodeVenta"] == "P.D.V. FONTIBON"
-                      ? const Color.fromARGB(255, 211, 22, 113)
-                      :rowData["PuntodeVenta"] == "P.D.V. PLAZA IMPERIAL"
-                      ? const Color.fromARGB(255, 6, 35, 255)
-                      :rowData["PuntodeVenta"] == "P.D.V. CL 70 CON 11"
-                      ? const Color.fromARGB(255, 6, 96, 181)
-                      :rowData["PuntodeVenta"] == "P.D.V.CALLE 82"
-                      ? const Color.fromARGB(255, 25, 159, 65)
-                      :rowData["PuntodeVenta"] == "P.D.V. ALAMOS"
-                      ? const Color.fromARGB(255, 40, 233, 18)
-                      :rowData["PuntodeVenta"] == "P.D.V. 103"
-                      ? const Color.fromARGB(255, 211, 218, 4)
-                      : const Color.fromARGB(255, 184, 203, 255),
+                              ? const Color.fromARGB(255, 174, 195, 22)
+                              : rowData["PuntodeVenta"] == "P.D.V. PALATINO"
+                                  ? const Color.fromARGB(255, 131, 227, 22)
+                                  : rowData["PuntodeVenta"] == "P.D.V. CL 170"
+                                      ? const Color.fromARGB(255, 212, 49, 35)
+                                      : rowData["PuntodeVenta"] ==
+                                              "P.D.V. PORTAL"
+                                          ? const Color.fromARGB(
+                                              255, 200, 22, 138)
+                                          : rowData["PuntodeVenta"] ==
+                                                  "P.D.V. LA CASTELLANA"
+                                              ? const Color.fromARGB(
+                                                  255, 58, 30, 218)
+                                              : rowData["PuntodeVenta"] ==
+                                                      "P.D.V. PLAZA DE LAS AMERICAS"
+                                                  ? const Color.fromARGB(
+                                                      255, 36, 193, 241)
+                                                  : rowData["PuntodeVenta"] ==
+                                                          "P.D.V. COLPATRIA"
+                                                      ? const Color.fromARGB(
+                                                          255, 231, 190, 66)
+                                                      : rowData["PuntodeVenta"] ==
+                                                              "P.D.V. AVENIDA SUBA"
+                                                          ? const Color.fromARGB(
+                                                              255, 0, 132, 33)
+                                                          : rowData["PuntodeVenta"] ==
+                                                                  "P.D.V. FONTIBON"
+                                                              ? const Color.fromARGB(
+                                                                  255, 211, 22, 113)
+                                                              : rowData["PuntodeVenta"] ==
+                                                                      "P.D.V. PLAZA IMPERIAL"
+                                                                  ? const Color.fromARGB(
+                                                                      255,
+                                                                      6,
+                                                                      35,
+                                                                      255)
+                                                                  : rowData["PuntodeVenta"] ==
+                                                                          "P.D.V. CL 70 CON 11"
+                                                                      ? const Color.fromARGB(
+                                                                          255,
+                                                                          6,
+                                                                          96,
+                                                                          181)
+                                                                      : rowData["PuntodeVenta"] ==
+                                                                              "P.D.V.CALLE 82"
+                                                                          ? const Color.fromARGB(
+                                                                              255,
+                                                                              25,
+                                                                              159,
+                                                                              65)
+                                                                          : rowData["PuntodeVenta"] == "P.D.V. ALAMOS"
+                                                                              ? const Color.fromARGB(255, 40, 233, 18)
+                                                                              : rowData["PuntodeVenta"] == "P.D.V. 103"
+                                                                                  ? const Color.fromARGB(255, 211, 218, 4)
+                                                                                  : rowData["PuntodeVenta"] == "P.D.V. PORTAL 80"
+                                                                                      ? Color.fromARGB(255, 229, 128, 128)
+                                                                                      : const Color.fromARGB(255, 184, 203, 255),
               borderRadius: BorderRadius.circular(10),
             ),
             children: [
