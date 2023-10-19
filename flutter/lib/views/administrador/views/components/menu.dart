@@ -1,4 +1,5 @@
 import 'package:conper/views/administrador/views/components/cajacuadreadm.dart';
+import 'package:conper/views/administrador/views/components/cajacuadreadmpunto.dart';
 import 'package:conper/views/administrador/views/components/tablaadm.dart';
 import 'package:conper/views/administrador/views/pqrsadm.dart';
 import 'package:flutter/material.dart';
@@ -460,7 +461,8 @@ class _MenuState extends State<MenuAdmin> {
               ),
               child: TextButton(
                 onPressed: () async {
-                  _showModalPuntoscuadres(context, ordersPuntos);
+                  _showModalCuadres(context, ordersPuntos);
+
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -539,6 +541,34 @@ class _MenuState extends State<MenuAdmin> {
           ],
         ),
       ),
+    );
+  }
+    void _showModalCuadres(BuildContext context, ordesPuntos) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                 _showModalPuntoscuadres(context, ordersPuntos);
+                },
+                child: const Text("Caja Punto"),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                 _showModalDomiscuadres(context, ordersPuntos);
+                },
+                child: const Text("Caja Domicilio"),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -698,23 +728,6 @@ class _MenuState extends State<MenuAdmin> {
     );
   }
 
-  void _showModalCuadre(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("selecionare el punto para hacer el cuadre"),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _showModalPuntos(BuildContext context, ordersPuntos) {
     showDialog(
       context: context,
@@ -759,7 +772,7 @@ class _MenuState extends State<MenuAdmin> {
     );
   }
 
-  void _showModalPuntoscuadres(BuildContext context, ordersPuntos) {
+  void _showModalDomiscuadres(BuildContext context, ordersPuntos) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -768,7 +781,7 @@ class _MenuState extends State<MenuAdmin> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("selecionar el punto para hacer el cuadre"),
+              const Text("selecionar el punto para hacer el cuadre"),
               SizedBox(
                 height: 400,
                 width: 300,
@@ -785,7 +798,7 @@ class _MenuState extends State<MenuAdmin> {
                       // ignore: non_constant_identifier_names
                       onButtonPressed: (info) async {
                         var idpunto = info['Id'];
-                        _showModalPuntoCuadre(context, idpunto);
+                        _showModalDomiCuadre(context, idpunto);
                       },
                       showOptionalButton: false,
                       child: const Icon(
@@ -802,6 +815,50 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
+   void _showModalPuntoscuadres(BuildContext context, ordersPuntos) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("selecionar el punto para hacer el cuadre"),
+              SizedBox(
+                height: 400,
+                width: 300,
+                child: Card(
+                  elevation: 8,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(5),
+                    child: Tablaadm(
+                      data: ordersPuntos,
+                      headers: const [
+                        {"Titulo": 'Id', "key": "Id"},
+                        {"Titulo": 'Nombre', "key": "Nombre"},
+                      ],
+                      // ignore: non_constant_identifier_names
+                      onButtonPressed: (info) async {
+                        var idpunto = info['Id'];
+                       _showModalPuntoCuadre(context, idpunto);
+                      },
+                      showOptionalButton: false,
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 
   void _showModalPuntospqrs(BuildContext context, ordersPuntos) {
     showDialog(
@@ -876,8 +933,22 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
+    void _showModall(BuildContext context, inicio, fin, idPunto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Cajapuntoadm(
+            inicio: inicio,
+            fin: fin,
+            idPunto: idPunto,
+          ),
+        );
+      },
+    );
+  }
 
-  void _showModalPuntoCuadre(BuildContext context, idpunto) {
+  void _showModalDomiCuadre(BuildContext context, idpunto) {
     TextEditingController inicioController = TextEditingController();
     TextEditingController finController = TextEditingController();
 
@@ -893,7 +964,7 @@ class _MenuState extends State<MenuAdmin> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      "Caja Punto",
+                      "Caja Cuadre Domiciliarios",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -953,6 +1024,97 @@ class _MenuState extends State<MenuAdmin> {
                               String inicio = inicioController.text;
                               String fin = finController.text;
                               _showModall2(context, inicio, fin, idpunto);
+                            },
+                            child: const Text('Capture'),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+   void _showModalPuntoCuadre(BuildContext context, idpunto) {
+    TextEditingController inicioController = TextEditingController();
+    TextEditingController finController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Caja Cuadre Domiciliarios",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // ignore: avoid_unnecessary_containers
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // ignore: sized_box_for_whitespace
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 1000,
+                              child: TextField(
+                                controller: inicioController,
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  hintText: 'Fecha Inicio aaaa-mm-dd',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - 1000,
+                              child: TextField(
+                                controller: finController,
+                                decoration: const InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  hintText: 'Fecha Fin aaaa-mm-dd',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              String inicio = inicioController.text;
+                              String fin = finController.text;
+                              _showModall(context, inicio, fin, idpunto);
                             },
                             child: const Text('Capture'),
                           )

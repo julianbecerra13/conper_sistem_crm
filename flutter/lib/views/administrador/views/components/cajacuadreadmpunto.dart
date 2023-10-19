@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:conper/models/cajadomi.dart';
+import 'package:conper/models/cajapunto.dart';
 import 'package:conper/views/components/tablad.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:vrouter/vrouter.dart';
 
-class Cajacuadreadm extends StatefulWidget {
+class Cajapuntoadm extends StatefulWidget {
   final dynamic inicio;
   final dynamic fin;
   final dynamic idPunto;
 
-  const Cajacuadreadm({
+  const Cajapuntoadm({
     Key? key,
     required this.inicio,
     required this.fin,
@@ -19,11 +20,12 @@ class Cajacuadreadm extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<Cajacuadreadm> createState() => _CajacuadreState();
+  State<Cajapuntoadm> createState() => _cajapuntoState();
 }
 
-class _CajacuadreState extends State<Cajacuadreadm> {
-  List<Map<String, dynamic>> cajaList = [];
+// ignore: camel_case_types
+class _cajapuntoState extends State<Cajapuntoadm> {
+  List<Map<String, dynamic>> cajaList2 = [];
 
   @override
   void initState() {
@@ -34,18 +36,16 @@ class _CajacuadreState extends State<Cajacuadreadm> {
   void getcajas() async {
     await _getcajas(widget.inicio, widget.fin, widget.idPunto).then((value) {
       setState(() {
-        cajaList = value;
+        cajaList2 = value;
       });
     });
   }
 
   Future<List<Map<String, dynamic>>> _getcajas(
-    dynamic inicio,
-    dynamic fin,
-    dynamic idPunto,
-  ) async {
+      dynamic inicio, dynamic fin, dynamic idPunto) async {
+    final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/cuadrecajadomi?&idPunto=$idPunto&fechaInicio=$inicio&fechaFin=$fin'));
+        'http://localhost:8080/cuadrecajapunto?idUsuario=$idPunto&idPunto=${prefs.getInt("IDPunto")}&fechaInicio=$inicio&fechaFin=$fin'));
 
     List<dynamic> caja = [];
     if (response.statusCode == 200) {
@@ -53,7 +53,7 @@ class _CajacuadreState extends State<Cajacuadreadm> {
       if (data == null) {
         return [];
       }
-      caja = data.map((i) => CajaDomis.fromJson(i)).toList();
+      caja = data.map((i) => CajaPunto.fromJson(i)).toList();
     } else {
       throw Exception('Failed to load data');
     }
@@ -104,20 +104,12 @@ class _CajacuadreState extends State<Cajacuadreadm> {
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.all(10),
                         child: TablaD(
-                          data: cajaList,
+                          data: cajaList2,
                           headers: const [
-                            {
-                              "Titulo": 'Nombre Domiciliario',
-                              "key": "nombreMovil"
-                            },
-                            {"Titulo": 'Punto', "key": "nombrePunto"},
-                            {"Titulo": 'Tipo de Pago', "key": "nombreTipoPago"},
-                            {"Titulo": 'Cantidad de Ventas', "key": "totalFP"},
-                            {
-                              "Titulo": 'Cantidad de Ordenes',
-                              "key": "totalOrdenes"
-                            },
-                            {"Titulo": 'Total', "key": "valorFP"},
+                            {"Titulo": 'Nombre', "key": "NombrePunto"},
+                            {"Titulo": 'Tipo de Pago', "key": "NombreTipoPago"},
+                            {"Titulo": 'Total Ordenes', "key": "TotalOrdenes"},
+                            {"Titulo": 'Total de ventas', "key": "TotalVenta"}
                           ],
                         ),
                       ),
