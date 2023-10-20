@@ -36,6 +36,7 @@ class ReportesModal extends StatelessWidget {
       // Convierte los datos de Excel en una lista de bytes
       final blob = html.Blob([Uint8List.fromList(excelData!)]);
       final url = html.Url.createObjectUrlFromBlob(blob);
+      // ignore: unused_local_variable
       final anchor = html.AnchorElement(href: url)
         ..setAttribute("download", "tabla_datos.xlsx")
         ..click();

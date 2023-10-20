@@ -337,6 +337,7 @@ class _ReportesState extends State<Reportes> {
                       if (jsonResponse is String) {
                         // ignore: use_build_context_synchronously
                         _showModal1(context, json.decode(jsonResponse));
+                        print(jsonResponse);
                       } else {
                         // ignore: use_build_context_synchronously
                         _showModal1(context, jsonResponse);
