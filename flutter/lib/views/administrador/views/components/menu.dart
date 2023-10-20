@@ -462,7 +462,6 @@ class _MenuState extends State<MenuAdmin> {
               child: TextButton(
                 onPressed: () async {
                   _showModalCuadres(context, ordersPuntos);
-
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -543,7 +542,8 @@ class _MenuState extends State<MenuAdmin> {
       ),
     );
   }
-    void _showModalCuadres(BuildContext context, ordesPuntos) {
+
+  void _showModalCuadres(BuildContext context, ordesPuntos) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -554,14 +554,14 @@ class _MenuState extends State<MenuAdmin> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                 _showModalPuntoscuadres(context, ordersPuntos);
+                  _showModalPuntoscuadres(context, ordersPuntos);
                 },
                 child: const Text("Caja Punto"),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                 _showModalDomiscuadres(context, ordersPuntos);
+                  _showModalDomiscuadres(context, ordersPuntos);
                 },
                 child: const Text("Caja Domicilio"),
               ),
@@ -815,7 +815,8 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
-   void _showModalPuntoscuadres(BuildContext context, ordersPuntos) {
+
+  void _showModalPuntoscuadres(BuildContext context, ordersPuntos) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -831,7 +832,7 @@ class _MenuState extends State<MenuAdmin> {
                 child: Card(
                   elevation: 8,
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: Tablaadm(
                       data: ordersPuntos,
                       headers: const [
@@ -841,7 +842,7 @@ class _MenuState extends State<MenuAdmin> {
                       // ignore: non_constant_identifier_names
                       onButtonPressed: (info) async {
                         var idpunto = info['Id'];
-                       _showModalPuntoCuadre(context, idpunto);
+                        _showModalPuntoCuadre(context, idpunto);
                       },
                       showOptionalButton: false,
                       child: const Icon(
@@ -858,7 +859,6 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
-
 
   void _showModalPuntospqrs(BuildContext context, ordersPuntos) {
     showDialog(
@@ -933,7 +933,8 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
-    void _showModall(BuildContext context, inicio, fin, idPunto) {
+
+  void _showModall(BuildContext context, inicio, fin, idPunto) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1039,7 +1040,8 @@ class _MenuState extends State<MenuAdmin> {
       },
     );
   }
-   void _showModalPuntoCuadre(BuildContext context, idpunto) {
+
+  void _showModalPuntoCuadre(BuildContext context, idpunto) {
     TextEditingController inicioController = TextEditingController();
     TextEditingController finController = TextEditingController();
 
@@ -1055,7 +1057,7 @@ class _MenuState extends State<MenuAdmin> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      "Caja Cuadre Domiciliarios",
+                      "Caja Cuadre Punto",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

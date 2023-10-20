@@ -45,7 +45,7 @@ class _cajapuntoState extends State<Cajapuntoadm> {
       dynamic inicio, dynamic fin, dynamic idPunto) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(
-        'http://localhost:8080/cuadrecajapunto?idUsuario=$idPunto&idPunto=${prefs.getInt("IDPunto")}&fechaInicio=$inicio&fechaFin=$fin'));
+        'http://localhost:8080/cuadrecajapunto?idUsuario=${prefs.getString("login")}&idPunto=$idPunto&fechaInicio=$inicio&fechaFin=$fin'));
 
     List<dynamic> caja = [];
     if (response.statusCode == 200) {
