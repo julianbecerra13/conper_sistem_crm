@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:conper/views/components/tabla.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +10,10 @@ class MyModalContent extends StatelessWidget {
   final Map<String, dynamic> informacion;
   final int opcion;
   const MyModalContent(
-      {super.key, required this.domiciliariosList, required this.informacion, required this.opcion});
+      {super.key,
+      required this.domiciliariosList,
+      required this.informacion,
+      required this.opcion});
 
   @override
   Widget build(BuildContext context) {
@@ -50,25 +52,68 @@ class MyModalContent extends StatelessWidget {
                           data: domiciliariosList,
                           headers: const [
                             {"Titulo": "Nombre", "key": "nombre"},
-                            {"Titulo": "ID Domiciliario", "key": "idDomiciliario"}
+                            {
+                              "Titulo": "ID Domiciliario",
+                              "key": "idDomiciliario"
+                            }
                           ],
-                      
+
                           // ignore: non_constant_identifier_names
                           onButtonPressed: (Domicilio) async {
-                            final prefs = await SharedPreferences.getInstance();
-                            await http
-                                .put(Uri.parse('http://localhost:8080/actualizar'),
-                                    body: json.encode({
-                                      "idPunto": prefs.getInt("idPunto"),
-                                      "idPedido": informacion["idGeneral"],
-                                      "idTraza": opcion,
-                                      "idDomiciliario": Domicilio["idDomiciliario"]
-                                    }))
-                                .then((response) {
+                            if (informacion['idOrdenNumero'] == null) {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              await http
+                                  .put(
+                                      Uri.parse(
+                                          'http://localhost:8080/actualizar'),
+                                      body: json.encode({
+                                        "idPunto": prefs.getInt("IDPunto"),
+                                        "idPedido": informacion["idGeneral"],
+                                        "idTraza": opcion,
+                                        "idDomiciliario":
+                                            Domicilio["idDomiciliario"]
+                                      }))
+                                  .then((response) {
+                                if (response.statusCode == 200) {
+                                  context.vRouter.to('/pedidos');
+                                }
+                              });
+                            } else {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final idPunto = prefs.getInt('IDPunto');
+                              final idOrdenNumero =
+                                  informacion['idOrdenNumero'];
+
+                              final response = await http.post(
+                                Uri.parse(
+                                    'http://148.113.165.132:8080/webhooks/webhooks/data/ORDEREADY?idOrdenNumero=$idOrdenNumero&idPunto=$idPunto'),
+                              );
+                              print(response.statusCode);
                               if (response.statusCode == 200) {
-                                context.vRouter.to('/pedidos');
+                                print('La solicitud fue exitosa');
+                              } else {
+                                print(
+                                    'La solicitud falló con el estado: ${response.statusCode}');
                               }
-                            });
+                              await http
+                                  .put(
+                                      Uri.parse(
+                                          'http://localhost:8080/actualizar'),
+                                      body: json.encode({
+                                        "idPunto": prefs.getInt("IDPunto"),
+                                        "idPedido": informacion["idGeneral"],
+                                        "idTraza": opcion,
+                                        "idDomiciliario":
+                                            Domicilio["idDomiciliario"]
+                                      }))
+                                  .then((response) {
+                                if (response.statusCode == 200) {
+                                  context.vRouter.to('//p_estancados');
+                                }
+                              });
+                            }
                           },
                           child: const Text("Asignarle el Pedido"),
                         ),

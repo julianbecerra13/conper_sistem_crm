@@ -1,5 +1,6 @@
 class Ordenes2 {
   late int idOrdenGeneral;
+  late String idOrdenNumero;
   late String nombreCliente;
   late String direccionOrden;
   late double totalOrden;
@@ -13,6 +14,7 @@ class Ordenes2 {
 
   Ordenes2({
     required this.idOrdenGeneral,
+    required this.idOrdenNumero,
     required this.nombreCliente,
     required this.direccionOrden,
     required this.totalOrden,
@@ -28,6 +30,7 @@ class Ordenes2 {
   factory Ordenes2.fromJson(Map<String, dynamic> json) {
     return Ordenes2(
       idOrdenGeneral: json['IDOrdenGeneral'] as int,
+      idOrdenNumero: json['IdOrdenNumero'] as String,
       nombreCliente: json['NombreCliente'] as String,
       direccionOrden: json['DireccionOrden'] as String,
       totalOrden: json['TotalOrden'] as double,
@@ -45,6 +48,7 @@ class Ordenes2 {
   Map<String, dynamic> toJson() {
     return {
       'idGeneral': idOrdenGeneral,
+      'IdOrdenNumero': idOrdenNumero,
       'NombreCliente': nombreCliente,
       'DireccionOrden': direccionOrden,
       'TotalOrden': totalOrden,

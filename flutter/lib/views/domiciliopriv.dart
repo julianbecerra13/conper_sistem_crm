@@ -328,29 +328,68 @@ class _DomiciliosPrivState extends State<DomiciliosPriv> {
 
   // ignore: non_constant_identifier_names
   Actualizar(int variable, info) async {
-    final prefs = await SharedPreferences.getInstance();
-    await http
-        .put(Uri.parse('http://localhost:8080/actualizarT'),
-            body: json.encode({
-              "idPunto": prefs.getInt("IDPunto"),
-              "idPedido": info["idGeneral"],
-              "idincidente": variable,
-              "idTraza": 6,
-            }))
-        .then((response) {
+    if (info['idOrdenNumero'] == null) {
+      final prefs = await SharedPreferences.getInstance();
+      await http
+          .put(Uri.parse('http://localhost:8080/actualizarT'),
+              body: json.encode({
+                "idPunto": prefs.getInt("IDPunto"),
+                "idPedido": info["idGeneral"],
+                "idincidente": variable,
+                "idTraza": 6,
+              }))
+          .then((response) {
+        if (response.statusCode == 200) {
+          VRouter.of(context).to('/domiciliario');
+          setState(() {
+            updatedOrdersTraza.removeWhere(
+                (element) => element["idGeneral"] == info["idGeneral"]);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Se ha actualizado el estado del pedido'),
+            ),
+          );
+        }
+      });
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      final idPunto = prefs.getInt('IDPunto');
+      final idOrdenNumero = info['idOrdenNumero'];
+
+      final response = await http.post(
+        Uri.parse(
+            'http://148.113.165.132:8080/webhooks/webhooks/data/ORDERDELIVERED?idOrdenNumero=$idOrdenNumero&idPunto=$idPunto'),
+      );
+
       if (response.statusCode == 200) {
-        VRouter.of(context).to('/domiciliario');
-        setState(() {
-          updatedOrdersTraza.removeWhere(
-              (element) => element["idGeneral"] == info["idGeneral"]);
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Se ha actualizado el estado del pedido'),
-          ),
-        );
+        print('La solicitud fue exitosa');
+      } else {
+        print('La solicitud falló con el estado: ${response.statusCode}');
       }
-    });
+
+      await http
+          .put(Uri.parse('http://localhost:8080/actualizarT'),
+              body: json.encode({
+                "idPunto": prefs.getInt("IDPunto"),
+                "idPedido": info["idGeneral"],
+                "idincidente": variable,
+                "idTraza": 6,
+              }))
+          .then((response) {
+        if (response.statusCode == 200) {
+          setState(() {
+            updatedOrdersTraza.removeWhere(
+                (element) => element["idGeneral"] == info["idGeneral"]);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Se ha actualizado el estado del pedido'),
+            ),
+          );
+        }
+      });
+    }
   }
 
   void modaltransferir(context, info) {

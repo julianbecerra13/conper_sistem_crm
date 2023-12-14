@@ -236,6 +236,10 @@ class _PedidosadmState extends State<Pedidosadm> {
                                           "key": "idGeneral"
                                         },
                                         {
+                                          "Titulo": 'Numero de orden DIDI',
+                                          "key": "IdOrdenNumero"
+                                        },
+                                        {
                                           "Titulo": 'Nombre',
                                           "key": "NombreCliente"
                                         },

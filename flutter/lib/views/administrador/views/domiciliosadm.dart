@@ -177,6 +177,10 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
                                             "key": "idGeneral"
                                           },
                                           {
+                                            "Titulo": 'Numero de orden DIDI',
+                                            "key": "IdOrdenNumero"
+                                          },
+                                          {
                                             "Titulo": 'Nombre',
                                             "key": "NombreCliente"
                                           },
@@ -318,27 +322,63 @@ class _DomiciliosadmState extends State<Domiciliosadm> {
 
   // ignore: non_constant_identifier_names
   void Actualizar(int variable, info) async {
-    await http
-        .put(Uri.parse('http://localhost:8080/actualizarT'),
-            body: json.encode({
-              "idPunto": info["IdPunto"],
-              "idPedido": info["idGeneral"],
-              "idincidente": variable,
-              "idTraza": 6,
-            }))
-        .then((response) {
+    if (info["IdOrdenNumero"] == null) {
+      await http
+          .put(Uri.parse('http://localhost:8080/actualizarT'),
+              body: json.encode({
+                "idPunto": info["IdPunto"],
+                "idPedido": info["idGeneral"],
+                "idincidente": variable,
+                "idTraza": 6,
+              }))
+          .then((response) {
+        if (response.statusCode == 200) {
+          setState(() {
+            ordersTraza.removeWhere(
+                (element) => element["idGeneral"] == info["idGeneral"]);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Se ha actualizado el estado del pedido'),
+            ),
+          );
+        }
+      });
+    } else {
+      final idPunto = info['IdPunto'];
+      final idOrdenNumero = info['idOrdenNumero'];
+
+      final response = await http.post(
+        Uri.parse(
+            'http://148.113.165.132:8080/webhooks/webhooks/data/ORDERDELIVERED?idOrdenNumero=$idOrdenNumero&idPunto=$idPunto'),
+      );
       if (response.statusCode == 200) {
-        setState(() {
-          ordersTraza.removeWhere(
-              (element) => element["idGeneral"] == info["idGeneral"]);
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Se ha actualizado el estado del pedido'),
-          ),
-        );
+        print('La solicitud fue exitosa');
+      } else {
+        print('La solicitud falló con el estado: ${response.statusCode}');
       }
-    });
+      await http
+          .put(Uri.parse('http://localhost:8080/actualizarT'),
+              body: json.encode({
+                "idPunto": info["IdPunto"],
+                "idPedido": info["idGeneral"],
+                "idincidente": variable,
+                "idTraza": 6,
+              }))
+          .then((response) {
+        if (response.statusCode == 200) {
+          setState(() {
+            ordersTraza.removeWhere(
+                (element) => element["idGeneral"] == info["idGeneral"]);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Se ha actualizado el estado del pedido'),
+            ),
+          );
+        }
+      });
+    }
   }
 
   void modaltransferir(context, info) {

@@ -92,7 +92,6 @@ class _PedidosState extends State<Pedidos> {
 
   Future<List<Map<String, dynamic>>> _getOrders() async {
     final prefs = await SharedPreferences.getInstance();
-
     final response = await http.get(Uri.parse(
         'http://localhost:8080/pedidos?idCliente=${prefs.getString("login")}&idTraza=2&idPunto=${prefs.getInt("IDPunto")}'));
     List<dynamic> orders = [];
@@ -255,6 +254,10 @@ class _PedidosState extends State<Pedidos> {
                                         {
                                           "Titulo": 'ID orden',
                                           "key": "idGeneral"
+                                        },
+                                        {
+                                          "Titulo": "Id Orden DIDI",
+                                          "key": "idOrdenNumero"
                                         },
                                         {
                                           "Titulo": 'Nombre',

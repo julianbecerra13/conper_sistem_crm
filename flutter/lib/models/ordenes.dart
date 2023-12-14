@@ -1,5 +1,6 @@
 class Ordenes {
   late int idOrdenGeneral;
+  late String idOrdenNumero;
   late String nombreCliente;
   late String direccionOrden;
   late double totalOrden;
@@ -12,6 +13,7 @@ class Ordenes {
 
   Ordenes({
     required this.idOrdenGeneral,
+    required this.idOrdenNumero,
     required this.nombreCliente,
     required this.direccionOrden,
     required this.totalOrden,
@@ -26,6 +28,7 @@ class Ordenes {
   factory Ordenes.fromJson(Map<String, dynamic> json) {
     return Ordenes(
       idOrdenGeneral: json['IDOrdenGeneral'] as int,
+      idOrdenNumero: json['IdOrdenNumero'] as String,
       nombreCliente: json['NombreCliente'] as String,
       direccionOrden: json['DireccionOrden'] as String,
       totalOrden: json['TotalOrden'] as double,
@@ -47,10 +50,11 @@ class Ordenes {
       'TotalOrden': totalOrden,
       'FechaCrea': fechaCrea,
       'NombreTraza': nombreTraza,
-      'IdPunto': idPunto, 
+      'IdPunto': idPunto,
       'PuntodeVenta': nombrePunto,
       'Observaciones': observaciones,
       'Telefono': telefono,
+      'idOrdenNumero': idOrdenNumero,
     };
   }
 }

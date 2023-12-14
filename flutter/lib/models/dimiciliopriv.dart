@@ -1,5 +1,6 @@
 class DomiPriv {
   late int id;
+  late String idOrdenNumero;
   late String nombre;
   late String telefono;
   late String direccion;
@@ -8,6 +9,7 @@ class DomiPriv {
 
   DomiPriv({
     required this.id,
+    required this.idOrdenNumero,
     required this.nombre,
     required this.telefono,
     required this.direccion,
@@ -18,6 +20,7 @@ class DomiPriv {
   factory DomiPriv.fromJson(Map<String, dynamic> json) {
     return DomiPriv(
       id: json['IdPedido'] as int,
+      idOrdenNumero: json['IdOrdenNumero'] as String,
       nombre: json['NombreCliente'] as String,
       telefono: json['TelefonoCelular'] as String,
       direccion: json['Direccion'] as String,
@@ -30,6 +33,7 @@ class DomiPriv {
   Map<String, dynamic> toJson() {
     return {
       'idGeneral': id,
+      'idOrdenNumero': idOrdenNumero,
       'Nombre': nombre,
       'Telefono': telefono,
       'Direccion': direccion,

@@ -38,6 +38,16 @@ class TarjetaDomiPriv extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.blue),
                   ),
+                   const TextSpan(
+                    text: "Id Orden DIDI: ",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "${data["idOrdenNumero"]}\n",
+                  ),
                   const TextSpan(
                     text: "Nombre: ",
                     style: TextStyle(
