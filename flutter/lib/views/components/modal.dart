@@ -86,16 +86,18 @@ class MyModalContent extends StatelessWidget {
                               final idOrdenNumero =
                                   informacion['idOrdenNumero'];
 
-                              final response = await http.post(
-                                Uri.parse(
-                                    'http://148.113.165.132:8080/webhooks/webhooks/data/ORDEREADY?idOrdenNumero=$idOrdenNumero&idPunto=$idPunto'),
-                              );
-                              print(response.statusCode);
+                              var request = http.Request(
+                                  'POST',
+                                  Uri.parse(
+                                      'http://148.113.165.132:8080/webhooks/webhooks/data/ORDEREADY?idOrdenNumero=$idOrdenNumero&idPunto=$idPunto'));
+
+                              http.StreamedResponse response =
+                                  await request.send();
+
                               if (response.statusCode == 200) {
-                                print('La solicitud fue exitosa');
+                                print(await response.stream.bytesToString());
                               } else {
-                                print(
-                                    'La solicitud falló con el estado: ${response.statusCode}');
+                                print(response.reasonPhrase);
                               }
                               await http
                                   .put(
